@@ -1,5 +1,5 @@
 from . import SerializerMixin, validates, re, db
-from .user import User
+from models.user import User
 
 class Stack(db.Model, SerializerMixin):
     __tablename__ = 'stacks'
@@ -11,7 +11,7 @@ class Stack(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     # Relationship
-    book_stacks = db.relationship('BookStack', back_populates='stacks', cascade="all, delete-orphan")
+    book_stacks = db.relationship('BookStack', back_populates='stack', cascade="all, delete-orphan")
     user = db.relationship('User', back_populates='stacks')
 
     # Serialize
@@ -28,7 +28,7 @@ class Stack(db.Model, SerializerMixin):
     
     # Validations
     @validates("name")
-    def validate_title(self, _, name):
+    def validate_name(self, _, name):
         if not isinstance(name, str):
             raise TypeError("Name must be a string.")
         elif not 2 <= len(name) <= 50:

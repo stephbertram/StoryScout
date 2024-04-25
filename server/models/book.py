@@ -7,8 +7,8 @@ class Book(db.Model, SerializerMixin):
     title = db.Column(db.String(100), nullable=False)
     author = db.Column(db.String(50), nullable=False)
     cover_photo = db.Column(db.String, nullable=False)
-    page_count = db.Column(db.Integer(500), nullable=False)
-    main_topic = db.Column(db.String, nullable=False)
+    page_count = db.Column(db.Integer, nullable=False)
+    topic = db.Column(db.String, nullable=False)
     description = db.Column(db.String(5000), nullable=False)
 
     # Relationship
@@ -30,7 +30,7 @@ class Book(db.Model, SerializerMixin):
 
     # Validations
 
-    # ADD cover_photo and main_topic
+    # ADD cover_photo and topic
 
     @validates("title")
     def validate_title(self, _, title):
