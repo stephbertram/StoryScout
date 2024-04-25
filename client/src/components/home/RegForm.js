@@ -16,6 +16,11 @@ const signupSchema = object({
 		.max(20, 'Username must be 20 characters or less.')
 		.required('Username is required.'),
 
+	email: string().email("Invalid email format.")
+		.min(5, 'Email must be at least 5 characters long.')
+		.max(40, 'Email must be 40 characters or less.')
+		.required('Email is required.'),
+
 	_password_hash: string()
 		.min(8, 'Password must be at least 8 characters long.')
 		.matches(/[a-zA-Z0-9]/, 'Password should contain letters and numbers.')
@@ -32,19 +37,21 @@ const signupSchema = object({
 
 // Login
 const loginSchema = object({
-	username: string().required('Username is required.'),
-	// Add additional password requirements
+	email: string().email("Invalid email format.").required('Email is required.'),
+
 	_password_hash: string()
 		.min(8, 'Password must be at least 8 characters long.')
-		.matches(
-			/[a-zA-Z0-9]/,
-			'Password can only contain letters and numbers.'
-		)
-		.required('Password is required.')
+		.matches(/[a-zA-Z0-9]/, 'Password should contain letters and numbers.')
+		.minLowercase(1, 'Password must contain at least 1 lowercase letter.')
+		.minUppercase(1, 'Password must contain at least 1 uppercase letter.')
+		.minNumbers(1, 'Password must contain at least 1 number.')
+		.minSymbols(1, 'Password must contain at least 1 special character.')
+		.required('Password is required.'),
 })
 
 const initialValues = {
 	username: '',
+	email: '',
 	_password_hash: '',
 	confirmPassword: ''
 }
@@ -78,7 +85,7 @@ const Auth = () => {
 							login(userData)
 						})
 						.then(() => {
-							isLogin ? navigate('/view') : navigate('/new')
+							navigate('/browse') 
 							toast.success('Logged in')
 						})
 					console.log(user)
@@ -97,19 +104,39 @@ const Auth = () => {
 			<h2>{isLogin ? 'Login':'Sign Up'}</h2>
 			<Formik onSubmit={formik.handleSubmit}>
 				<Form className='form' onSubmit={formik.handleSubmit}>
+					{/* If signup, show username field */}
+					{!isLogin && (
+						<>
+							<Field
+								type='text'
+								name='username'
+								placeholder='Username'
+								onChange={formik.handleChange}
+								onBlur={formik.handleBlur}
+								value={formik.values.username}
+								className='input'
+								autoComplete='username'
+							/>
+							{formik.errors.username && formik.touched.username && (
+								<div className='error-message show'>
+									{formik.errors.username}
+								</div>
+							)}
+						</>
+					)}
 					<Field
 						type='text'
-						name='username'
-						placeholder='Username'
+						name='email'
+						placeholder='Email'
 						onChange={formik.handleChange}
 						onBlur={formik.handleBlur}
-						value={formik.values.username}
+						value={formik.values.email}
 						className='input'
-						autoComplete='username'
+						autoComplete='email'
 					/>
-					{formik.errors.username && formik.touched.username && (
+					{formik.errors.email && formik.touched.email && (
 						<div className='error-message show'>
-							{formik.errors.username}
+							{formik.errors.email}
 						</div>
 					)}
 					<Field
@@ -128,6 +155,7 @@ const Auth = () => {
 								{formik.errors._password_hash}
 							</div>
 						)}
+					{/* If signup, show confirm password field */}
 					{!isLogin && (
 						<>
 							<Field
