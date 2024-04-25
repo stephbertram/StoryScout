@@ -1,12 +1,12 @@
 from . import SerializerMixin, validates, re, db
-from .book import Book
-from .stack import Stack
+from models.book import Book
+from models.stack import Stack
 
 class BookStack(db.Model, SerializerMixin):
     __tablename__ = 'book_stacks'
 
-    book_id = db.Column(db.Integer, db.ForeignKey('stacks.id'), primary_key = True)
-    stack_id = db.Column(db.Integer, db.ForeignKey('stacks.id'), primary_key = True)
+    book_id = db.Column(db.Integer, db.ForeignKey('books.id'), primary_key = True, index=True)
+    stack_id = db.Column(db.Integer, db.ForeignKey('stacks.id'), primary_key = True, index=True)
 
     # Relationship
     book = db.relationship('Book', back_populates='book_stacks')
