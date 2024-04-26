@@ -5,7 +5,7 @@ class Stack(db.Model, SerializerMixin):
     __tablename__ = 'stacks'
 
     id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.Integer, nullable=False)
+    name = db.Column(db.String(50), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))

@@ -23,24 +23,24 @@ def not_found(error):
 
 
 # Route Protection
-@app.before_request
-def before_request():
-    #! First refactor when inserting crew routes BUT not very DRY right?
-    # if request.endpoint == "productionbyid":
-    #     id = request.view_args.get("id")
-    #     prod = db.session.get(Production, id)
-    #     g.prod = prod
-    # elif request.endpoint == "crewmemberbyid":
-    #     id = request.view_args.get("id")
-    #     crew = db.session.get(CrewMember, id)
-    #     g.crew = crew
-    #! Better Approach
-    path_dict = {"productionbyid": Production, "crewmemberbyid": CrewMember}
-    if request.endpoint in path_dict:
-        id = request.view_args.get("id")
-        record = db.session.get(path_dict.get(request.endpoint), id)
-        key_name = "prod" if request.endpoint == "productionbyid" else "crew"
-        setattr(g, key_name, record)
+# @app.before_request
+# def before_request():
+#     #! First refactor when inserting crew routes BUT not very DRY right?
+#     # if request.endpoint == "productionbyid":
+#     #     id = request.view_args.get("id")
+#     #     prod = db.session.get(Production, id)
+#     #     g.prod = prod
+#     # elif request.endpoint == "crewmemberbyid":
+#     #     id = request.view_args.get("id")
+#     #     crew = db.session.get(CrewMember, id)
+#     #     g.crew = crew
+#     #! Better Approach
+#     path_dict = {"productionbyid": Production, "crewmemberbyid": CrewMember}
+#     if request.endpoint in path_dict:
+#         id = request.view_args.get("id")
+#         record = db.session.get(path_dict.get(request.endpoint), id)
+#         key_name = "prod" if request.endpoint == "productionbyid" else "crew"
+#         setattr(g, key_name, record)
 
 def login_required(func):
     @wraps(func)

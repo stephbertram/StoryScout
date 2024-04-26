@@ -29,9 +29,6 @@ class Book(db.Model, SerializerMixin):
         """
 
     # Validations
-
-    # ADD cover_photo and topic
-
     @validates("title")
     def validate_title(self, _, title):
         if not isinstance(title, str):
@@ -48,6 +45,13 @@ class Book(db.Model, SerializerMixin):
             raise ValueError(f"Author must be between 2 and 50 characters.")
         return author
     
+    @validates("cover_photo")
+    def validate_cover_photo(self, _, cover_photo):
+        required_prefix = "https://books.google.com/books/content?id="
+        if not cover_photo.startswith(required_prefix):
+            raise ValueError(f"Cover photo URL must start with {required_prefix}.")
+        return cover_photo
+    
     @validates("page_count")
     def validate_page_count(self, _, page_count):
         if not isinstance(page_count, int):
@@ -56,6 +60,35 @@ class Book(db.Model, SerializerMixin):
             raise ValueError(f"Page count must be between 1 and 500.")
         return page_count
     
+    topic_options=[
+        "Adventure",
+        "Bedtime",
+        "Courage",
+        "Creativity",
+        "Curiosity",
+        "Emotions",
+        "Family",
+        "Fantasy",
+        "Friendship",
+        "Fun",
+        "Humor",
+        "Identity",
+        "Inspiration",
+        "Kindness",
+        "Mystery",
+        "Perspective",
+        "Self-acceptance"
+    ]
+    
+    @validates("topic")
+    def validate_topic(self, _, topic):  
+        if not isinstance(topic, str):
+            raise TypeError("Topic must be a string.")
+        elif topic not in self.topic_options:
+            raise ValueError("Topic must be one of the predefined values.")
+        else:
+            return topic
+
     @validates("description")
     def validate_description(self, _, description):
         if not isinstance(description, str):
