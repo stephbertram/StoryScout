@@ -15,10 +15,6 @@ const signupSchema = object({
 		.min(3, 'Username must be at least 3 characters long.')
 		.max(20, 'Username must be 20 characters or less.')
 		.required('Username is required.'),
-	
-	image: Yup.mixed() // Check if correct
-		.test("FILE_SIZE", "File must be 1024x1024 or smaller.", (value) => value && value.size < 1024 * 1024)
-		.test("FILE_TYPE", "File must be a png or jpeg.", (value) => value && ['image/png', 'image/jpeg'].includes(value.type)),
 
 	email: string().email("Invalid email format.")
 		.min(5, 'Email must be at least 5 characters long.')
@@ -55,7 +51,6 @@ const loginSchema = object({
 
 const initialValues = {
 	username: '',
-	profile_image: '',
 	email: '',
 	_password_hash: '',
 	confirmPassword: ''
@@ -74,39 +69,40 @@ const RegForm = () => {
 		setIsLogin(!isLogin)
 	}
 
-	const handleFileChange = (e) => {
-		formik.setFieldValue("profile_image", e.target.file[0])
+	const handleFileChange = (event) => {
+        setFile(event.currentTarget.files[0]); // Update file state
     }
 
 	const formik = useFormik({
 		initialValues,
 		validationSchema: isLogin ? loginSchema : signupSchema,
-		onSubmit: (values) => {
-			const formData = new FormData();
-			Object.keys(values).forEach(key => {
-				if (key !== 'profile_image') { // Assuming 'profile_image' is your file's state key
-					formData.append(key, values[key]);
-				}
-			});
-			if (file) {
-				formData.append('profile_image', file);
-			}
-	
+		onSubmit: (formData) => {
+			console.log(formData)
 			fetch(requestUrl, {
 				method: 'POST',
-				body: formData
-			}).then(res => res.json())
-				.then(data => {
-					if (data.error) {
-						toast.error(data.error);
-					} else {
-						login(data);
-						navigate('/books');
-						toast.success('Logged in');
-					}
-				})
-				.catch((errorObj) => toast.error(errorObj.Error));
-			}
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(formData)
+			}).then((res) => {
+				if (res.ok) {
+					res.json()
+						.then((userData) => {
+							login(userData)
+						})
+						.then(() => {
+							navigate('/books') 
+							toast.success('Logged in')
+						})
+					console.log(user)
+				} else if (res.status === 422) {
+					toast.error('Invalid Login')
+				} else {
+					return res
+						.json()
+						.then((errorObj) => toast.error(errorObj.Error))}
+			})
+		}
 	})
 
 	return (
@@ -132,11 +128,6 @@ const RegForm = () => {
 									{formik.errors.username}
 								</div>
 							)}
-							<span>Profile Picture:</span>
-							<input 
-								type='file' 
-								name='profile_image'
-								onChange={handleFileChange} />
 						</>
 					)}
 					<Field

@@ -25,9 +25,9 @@ const UserProvider = ({ children }) => {
 			throw err
     }}
 
-	const updateEntries = (updatedEntries) => {
-		setUser({ ...user, entries: updatedEntries })
-	}
+	// const updateEntries = (updatedEntries) => {
+	// 	setUser({ ...user, entries: updatedEntries })
+	// }
 
     // Refresh
     useEffect(() => {
@@ -43,7 +43,7 @@ const UserProvider = ({ children }) => {
     }, [])
 
     return (
-        <UserContext.Provider value={{ user, login, logout, updateEntries }}>
+        <UserContext.Provider value={{ user, login, logout }}>
             {children}
         </UserContext.Provider>
 )}

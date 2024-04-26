@@ -1,40 +1,65 @@
-// import { useState, useEffect } from 'react'
-// import toast from 'react-hot-toast'
-
+import { useEffect, useState, useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { UserContext } from '../context/UserContext'
+import toast from 'react-hot-toast'
+import BookCard from './BookCard'
 
 const Browse = () => {
-    // const [books, setBooks] = useState([])
+	const { user } = useContext(UserContext)
+	const navigate = useNavigate()
+	const [books, setBooks] = useState([])
 
-    // API Key = AIzaSyByrsj18Tn_qMZTrR50jTHW2IcL7DNUuqw
+	const handleGoHome = () => {
+		navigate('/')
+	}
 
-    // useEffect(() => {
-    //     getBooks()
-    // }, [])
+	useEffect(() => {
+		fetch('/books')
+			.then((res) => {
+				if (res.ok) {
+					return res.json().then(setBooks)
+				}
+				return res
+					.json()
+					.then((errorObj) => toast.error(errorObj.message))
+			})
+			.catch((err) => {
+				toast.error('An unexpected error occurred.')
+			})
+	}, [])
 
-    // const getBooks = () => {
-    //     const apiKey = process.env.GOOGLE_BOOKS_API_KEY
-    //     const url = `https://www.googleapis.com/books/v1/volumes?q=subject:juvenile+fiction&maxResults=40&key=${apiKey}`
-
-    //     fetch(url)
-	// 		.then((resp) => {
-	// 			if (resp.ok) {
-	// 				return resp.json().then(setBooks)
-	// 			}
-	// 			return resp
-	// 				.json()
-	// 				.then((errorObj) => toast.error(errorObj.message))
-	// 		})
-	// 		.catch((err) => {
-	// 			toast.error('An unexpected error occurred.')
-	// 		})
-	// }
-
-    return (
+    const mappedBooks = books.map(book => (
+        <BookCard 
+            key={book.id} 
+            title={book.title} 
+            author={book.author}
+            cover_photo={book.cover_photo} 
+            page_count={book.page_count} 
+            topic={book.topic} 
+            description={book.description} 
+        />
+    ))
+    return(
         <div>
-            <h1>Browse Component</h1>
+            <h2 className='browse'>Browse Books</h2>
+            {mappedBooks.length > 0 ? mappedBooks : <p>No books available.</p>}
         </div>
     )
 }
 
-export default Browse
+        // user ? (
+            // <>
+            //     <div>
+            //         <h2 className='browse'>Browse Books</h2>
+            //         {mappedBooks}
+            //     </div>
+            // </>
+    //     ) : (
+    //     <>
+    //         <div className='entries-error-message entries'>You must be logged in to view this page.</div>
+    //         <button className='error-nav' onClick={handleGoHome}>Go to Login</button>
+    //     </>
+    // ))
+// }
 
+export default Browse
