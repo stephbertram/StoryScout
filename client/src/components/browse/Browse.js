@@ -1,18 +1,17 @@
-import { useEffect, useState, useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { UserContext } from '../context/UserContext'
+import { useEffect, useState } from 'react'
+// import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import BookCard from './BookCard'
 
 const Browse = () => {
-	const { user } = useContext(UserContext)
-	const navigate = useNavigate()
+	// const navigate = useNavigate()
 	const [books, setBooks] = useState([])
 
-	const handleGoHome = () => {
-		navigate('/')
-	}
+	// const handleGoHome = () => {
+	// 	navigate('/')
+	// }
 
+    // Clean up
 	useEffect(() => {
 		fetch('/books')
 			.then((res) => {
@@ -31,18 +30,16 @@ const Browse = () => {
     const mappedBooks = books.map(book => (
         <BookCard 
             key={book.id} 
+            id={book.id}
             title={book.title} 
             author={book.author}
             cover_photo={book.cover_photo} 
-            page_count={book.page_count} 
-            topic={book.topic} 
-            description={book.description} 
         />
     ))
     return(
         <div>
-            <h2 className='browse'>Browse Books</h2>
-            {mappedBooks.length > 0 ? mappedBooks : <p>No books available.</p>}
+            <h3 className='browse'>Browse Books</h3>
+            {mappedBooks.length > 0 ? mappedBooks : <p>Loading...</p>}
         </div>
     )
 }

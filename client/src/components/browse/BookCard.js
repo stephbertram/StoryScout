@@ -1,15 +1,23 @@
-const BookCard = ({title, author, cover_photo}) => {
+import { useNavigate } from 'react-router-dom'
+
+const BookCard = ({ id, title, author, cover_photo }) => {
+    const navigate = useNavigate()
+
+    const handleNavigate = () => {
+        navigate(`/books/${id}`);
+    };
+
     return (
-        
-        <div id='book-container'>
-            <div id='book-cover-photo'> 
-                <img src={cover_photo} alt={title}/>
+        <div id='book-container' onClick={handleNavigate}>
+            <div id='book-cover-photo'>
+                <img src={cover_photo} alt={title} />
             </div>
-            <div class="text-content"> 
-                <h3 id='book-title'>{title}</h3>
-                <span id='book-author'>{author}</span>
+            <div className="text-content">
+                <h3 id='book-title'>Title: {title}</h3>
+                <span id='book-author'>Author: {author}</span>
             </div>
         </div>
-)}
+    );
+}
 
 export default BookCard
