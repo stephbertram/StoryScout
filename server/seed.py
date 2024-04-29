@@ -94,11 +94,20 @@ def create_users():
 # Create Review
 def create_reviews():
     print('[purple]Creating Reviews[/purple] ✍🏽 ...\n')
+    
+    age_options= [
+        "Board Books (Ages 0-3)",
+        "Picture Books (Ages 3-6)",
+        "Early Reader Books (Ages 5-7)",
+        "Chapter Books (Ages 7-10)"
+    ]
+    
     try:
-        for _ in range(100):
+        for _ in range(300):
             new_review = Review(
                 rating=random.randint(1,5),
                 review=fake.paragraph(), 
+                rec_age=random.choice(age_options),
                 user_id=random.randint(1,20), 
                 book_id=random.randint(1,64) 
                 )

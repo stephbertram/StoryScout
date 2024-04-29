@@ -5,7 +5,7 @@ class Stack(db.Model, SerializerMixin):
     __tablename__ = 'stacks'
 
     id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.Integer, nullable=False)
+    name = db.Column(db.String(50), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -15,7 +15,7 @@ class Stack(db.Model, SerializerMixin):
     user = db.relationship('User', back_populates='stacks')
 
     # Serialize
-    serialize_rules=('-book_stacks.stacks', '-user.stacks',)
+    serialize_rules=('-book_stacks.stack', '-user.stacks',)
 
     # Representation
     def __repr__(self):

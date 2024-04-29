@@ -1,8 +1,14 @@
-import React from "react";
-import App from "./components/App";
-import "./index.css";
-import { createRoot } from "react-dom/client";
+import { createRoot } from 'react-dom/client'
+import { RouterProvider } from 'react-router-dom'
+import router from './routes/routes'
+import UserProvider from './components/context/UserContext'
+import './index.css'
 
-const container = document.getElementById("root");
-const root = createRoot(container);
-root.render(<App />);
+const rootElement = document.getElementById('root')
+const root = createRoot(rootElement)
+
+root.render(
+    <UserProvider>
+        <RouterProvider router={router} />
+    </UserProvider>
+)

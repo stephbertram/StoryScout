@@ -1,10 +1,25 @@
 #!/usr/bin/env python3
 
+#Signal Handling
+import signal
+import sys
+
 # Remote library imports
-from flask import request, session
+from flask import request, session, jsonify
 from flask_restful import Resource
 from werkzeug.exceptions import NotFound
 from functools import wraps
+from sqlalchemy.sql import func
+
+# Cloudinary
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+import logging
+import os
+# from cloudinary.utils import cloudinary_url
+from dotenv import load_dotenv
+load_dotenv()
 
 # Local imports
 from config import app, db, api
@@ -15,33 +30,17 @@ from models.review import Review
 from models.stack import Stack
 from models.user import User
 
+#Signal Handling
+def shutdown(signum, frame):
+    print("Shutting down from signal", signum)
+    sys.exit(0)
 
 # Error Handling
 @app.errorhandler(NotFound)
 def not_found(error):
     return {"error": error.description}, 404
 
-
 # Route Protection
-@app.before_request
-def before_request():
-    #! First refactor when inserting crew routes BUT not very DRY right?
-    # if request.endpoint == "productionbyid":
-    #     id = request.view_args.get("id")
-    #     prod = db.session.get(Production, id)
-    #     g.prod = prod
-    # elif request.endpoint == "crewmemberbyid":
-    #     id = request.view_args.get("id")
-    #     crew = db.session.get(CrewMember, id)
-    #     g.crew = crew
-    #! Better Approach
-    path_dict = {"productionbyid": Production, "crewmemberbyid": CrewMember}
-    if request.endpoint in path_dict:
-        id = request.view_args.get("id")
-        record = db.session.get(path_dict.get(request.endpoint), id)
-        key_name = "prod" if request.endpoint == "productionbyid" else "crew"
-        setattr(g, key_name, record)
-
 def login_required(func):
     @wraps(func)
     def decorated_function(*args, **kwargs):
@@ -49,7 +48,6 @@ def login_required(func):
             return {"Error": "Access Denied. Please log in."}, 422
         return func(*args, **kwargs)
     return decorated_function
-
 
 # API Routes
 class AllBooks(Resource):
@@ -62,16 +60,85 @@ class AllBooks(Resource):
 api.add_resource(AllBooks, "/books")
 
 
+
+# class BookById(Resource):
+#     def get(self, id):
+#         try: 
+#             if book := db.session.get(Book, id):
+#                 return book.to_dict(), 200
+#             else:
+#                 return {"Error": "Book not found."}, 404
+#         except Exception as e:
+#             return {"Error": str(e)}, 400
+# api.add_resource(BookById, "/books/<int:id>")
+
+
 class BookById(Resource):
-    def get(self, id):
-        try: 
-            if book := db.session.get(Book, id):
-                return book.to_dict(), 200
+    def get(self, book_id):
+        try:
+            book = Book.query.filter_by(id=book_id).first()
+            # book = db.session.get(Book, book_id)
+            if book:
+                # Calculate average rating
+                average_rating = db.session.query(func.avg(Review.rating)).filter(Review.book_id == book_id).scalar()
+
+                # Calculate the mode of rec_age
+                rec_age_mode_query = db.session.query(
+                    Review.rec_age,
+                    func.count(Review.rec_age).label('age_count')
+                ).filter(Review.book_id == book_id)\
+                .group_by(Review.rec_age)\
+                .order_by(db.desc('age_count'))\
+                .first()
+
+                rec_age_mode = rec_age_mode_query[0] if rec_age_mode_query else "Not available"
+
+                # Fetch all reviews for this book
+                reviews = db.session.query(Review.review).filter(Review.book_id == book_id).all()
+                
+                # Construct review data for JSON
+                review_data = [{
+                    'review': rev.review
+                } for rev in reviews]
+
+                return jsonify({
+                    'id': book.id,
+                    'title': book.title,
+                    'author': book.author,
+                    'cover_photo': book.cover_photo,
+                    'page_count': book.page_count,
+                    'topic': book.topic,
+                    'description': book.description,
+                    'average_rating': float(average_rating) if average_rating else 0,
+                    'rec_age_mode': rec_age_mode,
+                    'reviews': review_data
+                })
             else:
-                return {"Error": "Book not found."}, 404
+                return {'Error': 'Book not found'}, 404
         except Exception as e:
             return {"Error": str(e)}, 400
-api.add_resource(BookById, "/books/<int:id>")
+api.add_resource(BookById, "/books/<int:book_id>")
+
+
+
+class BooksInUserStack(Resource):
+    def get(self, user_id):
+        try:
+            user = User.query.filter_by(id=user_id).first()
+            if not user:
+                return {'Error': 'User not found'}, 404
+            
+            # Collect all books from all stacks belonging to the user
+            books = []
+            for stack in user.stacks:
+                books.extend([book.to_dict() for book in stack.books])
+            return books, 200
+        except Exception as e:
+            return {"Error": str(e)}, 400
+api.add_resource(BooksInUserStack, "/users/<int:user_id>/stacks/books")
+
+
+
 
 
 class UserById(Resource):
@@ -134,6 +201,11 @@ class SignUp(Resource):
             new_user.password_hash = data.get('_password_hash')
             db.session.add(new_user)
             db.session.commit()
+
+            new_stack = Stack(name="Stack1", user_id=new_user.id)
+            db.session.add(new_stack)
+            db.session.commit()
+
             session['user_id'] = new_user.id
             return new_user.to_dict(), 201
         except Exception as e:
@@ -182,6 +254,32 @@ class CheckMe(Resource):
 api.add_resource(CheckMe, '/me')
 
 
+
+#Cloudinary Profile Pic Storage
+# @app.route("/upload", methods=['POST'])
+# def upload_file():
+#     app.logger.info('in upload route')
+
+#     cloudinary.config(cloud_name = os.getenv('CLOUD_NAME'), api_key=os.getenv('API_KEY'), 
+#         api_secret=os.getenv('API_SECRET'))
+#     upload_result = None
+#     if request.method == 'POST':
+#         file_to_upload = request.files['file']
+#         app.logger.info('%s file_to_upload', file_to_upload)
+#         if file_to_upload:
+#             upload_result = cloudinary.uploader.upload(file_to_upload)
+#             app.logger.info(upload_result)
+#             return jsonify(upload_result)
+    
+# class UploadFile(Resource): 
+#     def post(self): 
+#         file = request.files['file'] 
+#         file.save('/uploads/' + file.filename) 
+#         return 'File uploaded successfully!' 
+# api.add_resource(UploadFile, '/upload')
+
+
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
+
 
