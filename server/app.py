@@ -49,7 +49,6 @@ def login_required(func):
         return func(*args, **kwargs)
     return decorated_function
 
-
 # API Routes
 class AllBooks(Resource):
     def get(self):
@@ -95,12 +94,12 @@ class BookById(Resource):
                 rec_age_mode = rec_age_mode_query[0] if rec_age_mode_query else "Not available"
 
                 # Fetch all reviews for this book
-                # reviews = db.session.query(Review.review).filter(Review.book_id == book_id).all()
+                reviews = db.session.query(Review.review).filter(Review.book_id == book_id).all()
                 
                 # Construct review data for JSON
-                # review_data = [{
-                #     'review': rev.review
-                # } for rev in reviews]
+                review_data = [{
+                    'review': rev.review
+                } for rev in reviews]
 
                 return jsonify({
                     'id': book.id,
@@ -112,7 +111,7 @@ class BookById(Resource):
                     'description': book.description,
                     'average_rating': float(average_rating) if average_rating else 0,
                     'rec_age_mode': rec_age_mode,
-                    # 'reviews': review_data
+                    'reviews': review_data
                 })
             else:
                 return {'Error': 'Book not found'}, 404
@@ -193,7 +192,7 @@ class Reviews(Resource):
 api.add_resource(Reviews, "/reviews")
 
 
-# User Management - ADD DEFAULT STACK
+# User Management
 class SignUp(Resource):
     def post(self):
         try:
@@ -207,7 +206,6 @@ class SignUp(Resource):
             db.session.add(new_stack)
             db.session.commit()
 
-            
             session['user_id'] = new_user.id
             return new_user.to_dict(), 201
         except Exception as e:
@@ -215,22 +213,6 @@ class SignUp(Resource):
             return {"Error": str(e)}, 400
 api.add_resource(SignUp, '/signup')
 
-
-
-# class SignUp(Resource):
-#     def post(self):
-#         try:
-#             data = request.get_json()
-#             new_user = User(username=data.get('username'), email=data.get('email'))
-#             new_user.password_hash = data.get('_password_hash')
-#             db.session.add(new_user)
-#             db.session.commit()
-#             session['user_id'] = new_user.id
-#             return new_user.to_dict(), 201
-#         except Exception as e:
-#             db.session.rollback()
-#             return {"Error": str(e)}, 400
-# api.add_resource(SignUp, '/signup')
 
 class Login(Resource):
     def post(self):

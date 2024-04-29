@@ -23,7 +23,7 @@ const BookDetails = () => {
     }, [id]);
 
     const handleAddReviewClick = () => {
-        setShowReviewModal(true);
+        setShowReviewModal(true)
     };
 
     const handleChange = (e) => {
@@ -32,8 +32,8 @@ const BookDetails = () => {
         if (name === 'rating' || name === 'user_id') {
             formattedValue = parseInt(value, 10); // Convert to integer
         }
-        setReviewData(prev => ({ ...prev, [name]: formattedValue }));
-    };
+        setReviewData(prev => ({ ...prev, [name]: formattedValue }))
+    }
 
     const handleSubmitReview = (e) => {
         e.preventDefault();
@@ -44,12 +44,12 @@ const BookDetails = () => {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Review submitted:', data);
+            console.log('Review submitted:', data)
             setShowReviewModal(false);
             // Add update to state to show new review
         })
         .catch(error => {
-            console.error('Error submitting review:', error);
+            console.error('Error submitting review:', error)
         });
     };
 
@@ -101,7 +101,16 @@ const BookDetails = () => {
             <br />
             <br />
             <div>
-                <h3>Placeholder for Reviews</h3>
+                <h3>Reviews</h3>
+                {book.reviews && book.reviews.length > 0 ? (
+                    book.reviews.map((review, index) => (
+                        <div key={index}>
+                            <p>{review.review}</p>
+                        </div>
+                    ))
+                ) : (
+                    <p>No reviews yet.</p>
+                )}
             </div>
         </div>
     );
