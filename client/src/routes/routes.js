@@ -3,7 +3,7 @@ import App from '../App'
 import Error from '../components/errors/Error'
 import Browse from '../components/browse/Browse'
 import BookDetails from '../components/book_details/BookDetails'
-// import Stacks from '../components/stacks/Stacks'
+import Stacks from '../components/stacks/Stacks'
 // import Profile from '../components/profile/Profile'
 import Home from '../components/home/Home'
 
@@ -26,10 +26,10 @@ const router = createBrowserRouter([
                 path: '/books/:id',
                 element: <BookDetails />
             },
-            // {
-            //     path: '/stacks',
-            //     element: <Stacks />
-            // },
+            {
+                path: '/stacks',
+                element: <Stacks />
+            },
             // {
             //     path: '/user/edit',
             //     element: <Profile />

@@ -120,24 +120,21 @@ class BookById(Resource):
 api.add_resource(BookById, "/books/<int:book_id>")
 
 
-
 class BooksInUserStack(Resource):
     def get(self, user_id):
         try:
-            user = User.query.filter_by(id=user_id).first()
-            if not user:
-                return {'Error': 'User not found'}, 404
-            
-            # Collect all books from all stacks belonging to the user
-            books = []
-            for stack in user.stacks:
-                books.extend([book.to_dict() for book in stack.books])
-            return books, 200
+            if user := db.session.get(User, user_id):
+                all_books = []
+                for stack in user.stacks:
+                    # Books proxy allows direct access to books in each stack
+                    stack_books = [book.to_dict() for book in stack.books]
+                    all_books.extend(stack_books)
+                return stack_books, 200   
+            else:
+                return {"Error": "User not found."}, 404
         except Exception as e:
             return {"Error": str(e)}, 400
 api.add_resource(BooksInUserStack, "/users/<int:user_id>/stacks/books")
-
-
 
 
 
