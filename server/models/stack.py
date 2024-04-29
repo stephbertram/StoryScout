@@ -15,7 +15,7 @@ class Stack(db.Model, SerializerMixin):
     user = db.relationship('User', back_populates='stacks')
 
     # Serialize
-    serialize_rules=('-book_stacks.stacks', '-user.stacks',)
+    serialize_rules=('-book_stacks.stack', '-user.stacks',)
 
     # Representation
     def __repr__(self):

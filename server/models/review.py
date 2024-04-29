@@ -19,7 +19,8 @@ class Review(db.Model, SerializerMixin):
     user = db.relationship('User', back_populates='reviews')
 
     # Serialize
-    serialize_rules=('-book.reviews', '-user.reviews',)
+    # serialize_rules=('-book', '-user',)
+    serialize_only=('id', 'rating', 'review', 'rec_age', 'book_id', 'user_id', 'user.username')
 
     # Representation
     def __repr__(self):

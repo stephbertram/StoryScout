@@ -16,7 +16,7 @@ class Book(db.Model, SerializerMixin):
     reviews = db.relationship('Review', back_populates='book', cascade="all, delete-orphan")
 
     # Serialize
-    serialize_rules=('-reviews.book', '-book_stacks.book',)
+    serialize_rules=('-reviews.book', '-book_stacks',)
 
     # Representation
     def __repr__(self):

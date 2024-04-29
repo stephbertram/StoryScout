@@ -46,7 +46,7 @@ const BookDetails = () => {
         .then(data => {
             console.log('Review submitted:', data);
             setShowReviewModal(false);
-            // Optionally refresh or update local state to show new review
+            // Add update to state to show new review
         })
         .catch(error => {
             console.error('Error submitting review:', error);
