@@ -13,6 +13,7 @@ const BookDetails = () => {
         rec_age: ''
     });
 
+    // Clean up
     useEffect(() => {
         fetch(`/books/${id}`)
             .then(response => response.json())
@@ -35,6 +36,7 @@ const BookDetails = () => {
         setReviewData(prev => ({ ...prev, [name]: formattedValue }))
     }
 
+    // Clean up
     const handleSubmitReview = (e) => {
         e.preventDefault();
         fetch('/reviews', {
@@ -46,12 +48,16 @@ const BookDetails = () => {
         .then(data => {
             console.log('Review submitted:', data)
             setShowReviewModal(false);
-            // Add update to state to show new review
+            setBook(prevBook => ({
+                ...prevBook,
+                reviews: [...prevBook.reviews, data]
+                })
+            )
         })
         .catch(error => {
             console.error('Error submitting review:', error)
         });
-    };
+    }
 
     if (!book) {
         return <div>Loading...</div>;
@@ -70,6 +76,7 @@ const BookDetails = () => {
                 <p>Description: {book.description}</p>
             </div>
             <div>
+            <button>Add to Stack</button>
                 <button onClick={handleAddReviewClick}>Add Review</button>
             </div>
             {showReviewModal && (
