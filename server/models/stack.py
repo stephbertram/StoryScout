@@ -1,5 +1,6 @@
 from . import SerializerMixin, validates, re, db
 from models.user import User
+from sqlalchemy.ext.associationproxy import association_proxy
 
 class Stack(db.Model, SerializerMixin):
     __tablename__ = 'stacks'
@@ -16,6 +17,9 @@ class Stack(db.Model, SerializerMixin):
 
     # Serialize
     serialize_rules=('-book_stacks.stack', '-user.stacks',)
+
+    # Association Proxy
+    books = association_proxy('book_stacks', 'book')
 
     # Representation
     def __repr__(self):

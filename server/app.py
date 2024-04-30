@@ -60,19 +60,6 @@ class AllBooks(Resource):
 api.add_resource(AllBooks, "/books")
 
 
-
-# class BookById(Resource):
-#     def get(self, id):
-#         try: 
-#             if book := db.session.get(Book, id):
-#                 return book.to_dict(), 200
-#             else:
-#                 return {"Error": "Book not found."}, 404
-#         except Exception as e:
-#             return {"Error": str(e)}, 400
-# api.add_resource(BookById, "/books/<int:id>")
-
-
 class BookById(Resource):
     def get(self, book_id):
         try:
@@ -120,25 +107,21 @@ class BookById(Resource):
 api.add_resource(BookById, "/books/<int:book_id>")
 
 
-
 class BooksInUserStack(Resource):
     def get(self, user_id):
         try:
-            user = User.query.filter_by(id=user_id).first()
-            if not user:
-                return {'Error': 'User not found'}, 404
-            
-            # Collect all books from all stacks belonging to the user
-            books = []
-            for stack in user.stacks:
-                books.extend([book.to_dict() for book in stack.books])
-            return books, 200
+            if user := db.session.get(User, user_id):
+                all_books = []
+                for stack in user.stacks:
+                    # Books proxy allows direct access to books in each stack
+                    stack_books = [book.to_dict() for book in stack.books]
+                    all_books.extend(stack_books)
+                return stack_books, 200   
+            else:
+                return {"Error": "User not found."}, 404
         except Exception as e:
             return {"Error": str(e)}, 400
 api.add_resource(BooksInUserStack, "/users/<int:user_id>/stacks/books")
-
-
-
 
 
 class UserById(Resource):
@@ -190,6 +173,68 @@ class Reviews(Resource):
             db.session.rollback()
             return {"Errors": ["validation errors"]}, 400
 api.add_resource(Reviews, "/reviews")
+
+
+class BookToStack(Resource):
+    def post(self, user_id, book_id):
+        try:
+            user = User.query.get(user_id)
+            book = Book.query.get(book_id)
+            
+            if not user or not book:
+                return {"Error": "Stack not found for user."}, 404
+
+            # First stack is default stack
+            stack = user.stacks[0] if user.stacks else None
+            if not stack:
+                return {"Error": "Stack not found for user."}, 404
+
+            # Create a new BookStack entry
+            new_book_stack = BookStack(book_id=book.id, stack_id=stack.id)
+            db.session.add(new_book_stack)
+            db.session.commit()
+            
+            return new_book_stack.to_dict(), 201
+
+        except Exception as e:
+            db.session.rollback()
+            return {"Error": str(e)}, 400
+api.add_resource(BookToStack, '/<int:user_id>/add_to_stack/<int:book_id>')
+
+
+class RemoveBookFromStack(Resource):
+    def delete(self, user_id, book_id):
+        try:
+            user = User.query.get(user_id)
+            if not user:
+                return {"Error": "User not found."}, 404
+
+            # Attempt to find the book in any of the user's stacks
+            found_book_stack = None
+            for stack in user.stacks:
+                for book_stack in stack.book_stacks:
+                    if book_stack.book_id == book_id:
+                        found_book_stack = book_stack
+                        break
+                if found_book_stack:
+                    break
+            
+            # If the book is not found in any stack, return an error
+            if not found_book_stack:
+                return {"Error": "Book not found in stack."}, 404
+
+            # Remove the book from the stack
+            db.session.delete(found_book_stack)
+            db.session.commit()
+
+            return {"Success": "Book removed from stack"}, 200
+        except Exception as e:
+            db.session.rollback()
+            return {"Error": str(e)}, 400
+api.add_resource(RemoveBookFromStack, '/<int:user_id>/remove_book/<int:book_id>')
+
+
+
 
 
 # User Management

@@ -13,7 +13,7 @@ const Nav = () => {
                 {/* Always show these links if there is a user logged in */}
                 {user && (
                     <>
-                        <NavLink id='link' to='/browse' className='nav-link'>Browse Books</NavLink>
+                        <NavLink id='link' to='/books' className='nav-link'>Browse Books</NavLink>
                         <NavLink id='link' to='/stacks' className='nav-link'>View Stack</NavLink>
                         <NavLink id='link' to='/user/edit' className='nav-link'>Profile</NavLink>
                         <NavLink id='link' to='/' className='nav-link' onClick={logout}>Logout</NavLink>

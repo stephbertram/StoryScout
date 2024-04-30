@@ -1,6 +1,7 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { useParams } from 'react-router-dom';
-import { UserContext } from '../context/UserContext';
+import React, { useEffect, useState, useContext } from 'react'
+import { useParams } from 'react-router-dom'
+import { UserContext } from '../context/UserContext'
+import toast from 'react-hot-toast'
 
 const BookDetails = () => {
     const { user } = useContext(UserContext)
@@ -19,26 +20,31 @@ const BookDetails = () => {
             .then(response => response.json())
             .then(data => setBook(data))
             .catch(error => {
-                console.error('Error fetching book details:', error);
-            });
-    }, [id]);
+                console.error('Error fetching book details:', error)
+                toast.error('Error fetching book details.')
+            })
+    }, [id])
+
+    if (!book) {
+        return <div>Loading...</div>;
+    }
 
     const handleAddReviewClick = () => {
         setShowReviewModal(true)
     };
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        let formattedValue = value;
+        const { name, value } = e.target
+        let formattedValue = value
         if (name === 'rating' || name === 'user_id') {
-            formattedValue = parseInt(value, 10); // Convert to integer
+            formattedValue = parseInt(value, 10) // Convert to integer
         }
         setReviewData(prev => ({ ...prev, [name]: formattedValue }))
     }
 
     // Clean up
     const handleSubmitReview = (e) => {
-        e.preventDefault();
+        e.preventDefault()
         fetch('/reviews', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -56,11 +62,31 @@ const BookDetails = () => {
         })
         .catch(error => {
             console.error('Error submitting review:', error)
-        });
+            toast.error('Failed to submit review.')
+        })
     }
 
-    if (!book) {
-        return <div>Loading...</div>;
+    // Clean up
+    const handleAddToStack = () => {
+        if (!user || !user.id || !book || !book.id) {
+            toast.error('Invalid operation.')
+            return
+        }
+        fetch(`/${user.id}/add_to_stack/${book.id}`, {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                toast.error(data.error)
+            } else {
+                toast.success('Book added to your stack!')
+            }
+        })
+        .catch(error => {
+            console.error('Error adding book to stack:', error)
+            toast.error('Failed to add book to stack.')
+        })
     }
 
     return (
@@ -76,7 +102,7 @@ const BookDetails = () => {
                 <p>Description: {book.description}</p>
             </div>
             <div>
-            <button>Add to Stack</button>
+                <button onClick={handleAddToStack}>Add to Stack</button>
                 <button onClick={handleAddReviewClick}>Add Review</button>
             </div>
             {showReviewModal && (
