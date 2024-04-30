@@ -202,6 +202,40 @@ class BookToStack(Resource):
 api.add_resource(BookToStack, '/<int:user_id>/add_to_stack/<int:book_id>')
 
 
+class RemoveBookFromStack(Resource):
+    def delete(self, user_id, book_id):
+        try:
+            user = User.query.get(user_id)
+            if not user:
+                return {"Error": "User not found."}, 404
+
+            # Attempt to find the book in any of the user's stacks
+            found_book_stack = None
+            for stack in user.stacks:
+                for book_stack in stack.book_stacks:
+                    if book_stack.book_id == book_id:
+                        found_book_stack = book_stack
+                        break
+                if found_book_stack:
+                    break
+            
+            # If the book is not found in any stack, return an error
+            if not found_book_stack:
+                return {"Error": "Book not found in stack."}, 404
+
+            # Remove the book from the stack
+            db.session.delete(found_book_stack)
+            db.session.commit()
+
+            return {"Success": "Book removed from stack"}, 200
+        except Exception as e:
+            db.session.rollback()
+            return {"Error": str(e)}, 400
+api.add_resource(RemoveBookFromStack, '/<int:user_id>/remove_book/<int:book_id>')
+
+
+
+
 
 # User Management
 class SignUp(Resource):
