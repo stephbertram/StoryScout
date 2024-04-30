@@ -60,19 +60,6 @@ class AllBooks(Resource):
 api.add_resource(AllBooks, "/books")
 
 
-
-# class BookById(Resource):
-#     def get(self, id):
-#         try: 
-#             if book := db.session.get(Book, id):
-#                 return book.to_dict(), 200
-#             else:
-#                 return {"Error": "Book not found."}, 404
-#         except Exception as e:
-#             return {"Error": str(e)}, 400
-# api.add_resource(BookById, "/books/<int:id>")
-
-
 class BookById(Resource):
     def get(self, book_id):
         try:
@@ -137,7 +124,6 @@ class BooksInUserStack(Resource):
 api.add_resource(BooksInUserStack, "/users/<int:user_id>/stacks/books")
 
 
-
 class UserById(Resource):
     def get(self, id):
         try: 
@@ -187,6 +173,34 @@ class Reviews(Resource):
             db.session.rollback()
             return {"Errors": ["validation errors"]}, 400
 api.add_resource(Reviews, "/reviews")
+
+
+class BookToStack(Resource):
+    def post(self, user_id, book_id):
+        try:
+            user = User.query.get(user_id)
+            book = Book.query.get(book_id)
+            
+            if not user or not book:
+                return {"Error": "Stack not found for user."}, 404
+
+            # First stack is default stack
+            stack = user.stacks[0] if user.stacks else None
+            if not stack:
+                return {"Error": "Stack not found for user."}, 404
+
+            # Create a new BookStack entry
+            new_book_stack = BookStack(book_id=book.id, stack_id=stack.id)
+            db.session.add(new_book_stack)
+            db.session.commit()
+            
+            return new_book_stack.to_dict(), 201
+
+        except Exception as e:
+            db.session.rollback()
+            return {"Error": str(e)}, 400
+api.add_resource(BookToStack, '/<int:user_id>/add_to_stack/<int:book_id>')
+
 
 
 # User Management
