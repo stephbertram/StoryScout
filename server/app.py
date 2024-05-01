@@ -238,56 +238,19 @@ api.add_resource(RemoveBookFromStack, '/<int:user_id>/remove_book/<int:book_id>'
 
 
 # User Management
-# class SignUp(Resource):
-#     def post(self):
-#         file = request.files['profile_image']
-#         data = request.form
-#         import ipdb; ipdb.set_trace()
-#         try:
-#             new_user = User(
-#                 username=data['username'],
-#                 email=data['email'],
-#                 _password_hash=data['_password_hash'], 
-#                 profile_image=file.filename  # Assuming you save the filename or handle the file save
-#             )
-#             db.session.add(new_user)
-#             db.session.commit()
-
-#             # Optional: Save file to a directory or storage service here
-
-#             new_stack = Stack(name="Stack1", user_id=new_user.id)
-#             db.session.add(new_stack)
-#             db.session.commit()
-
-#             session['user_id'] = new_user.id
-#             return new_user.to_dict(), 201
-#         except Exception as e:
-#             db.session.rollback()
-#             return {"Error": str(e)}, 400
-# api.add_resource(SignUp, '/signup')
-
-# class Login(Resource):
-#     def post(self):
-#         try:  
-#             data = request.get_json()
-#             user = User.query.filter_by(email=data.get("email")).first()
-#             if user and user.authenticate(data.get('_password_hash')):
-#                 session["user_id"] = user.id
-#                 return user.to_dict(), 200
-#             else:
-#                 return {"Error": "Invalid Login"}, 422
-#         except Exception as e:
-#             return {"Error": str(e)}, 40
-# api.add_resource(Login, '/login')
-
-
-
 class SignUp(Resource):
     def post(self):
+        import ipdb; ipdb.set_trace()
+        file = request.files['profile_image']
+        data = request.form
+        
         try:
-            data = request.get_json()
-            new_user = User(username=data.get('username'), email=data.get('email'))
-            new_user.password_hash = data.get('_password_hash')
+            new_user = User(
+                username=data['username'],
+                email=data['email'],
+                _password_hash=data['_password_hash'], 
+                profile_image=file.filename  # Assuming you save the filename or handle the file save
+            )
             db.session.add(new_user)
             db.session.commit()
 
@@ -302,7 +265,6 @@ class SignUp(Resource):
             return {"Error": str(e)}, 400
 api.add_resource(SignUp, '/signup')
 
-
 class Login(Resource):
     def post(self):
         try:  
@@ -314,9 +276,46 @@ class Login(Resource):
             else:
                 return {"Error": "Invalid Login"}, 422
         except Exception as e:
-            db.session.rollback()
-            return {"Error": str(e)}, 400
+            return {"Error": str(e)}, 40
 api.add_resource(Login, '/login')
+
+
+
+# class SignUp(Resource):
+#     def post(self):
+#         try:
+#             data = request.get_json()
+#             new_user = User(username=data.get('username'), email=data.get('email'))
+#             new_user.password_hash = data.get('_password_hash')
+#             db.session.add(new_user)
+#             db.session.commit()
+
+#             new_stack = Stack(name="Stack1", user_id=new_user.id)
+#             db.session.add(new_stack)
+#             db.session.commit()
+
+#             session['user_id'] = new_user.id
+#             return new_user.to_dict(), 201
+#         except Exception as e:
+#             db.session.rollback()
+#             return {"Error": str(e)}, 400
+# api.add_resource(SignUp, '/signup')
+
+
+# class Login(Resource):
+#     def post(self):
+#         try:  
+#             data = request.get_json()
+#             user = User.query.filter_by(email=data.get("email")).first()
+#             if user and user.authenticate(data.get('_password_hash')):
+#                 session["user_id"] = user.id
+#                 return user.to_dict(), 200
+#             else:
+#                 return {"Error": "Invalid Login"}, 422
+#         except Exception as e:
+#             db.session.rollback()
+#             return {"Error": str(e)}, 400
+# api.add_resource(Login, '/login')
 
 
 
