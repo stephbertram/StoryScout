@@ -4,7 +4,7 @@ import Error from '../components/errors/Error'
 import Browse from '../components/browse/Browse'
 import BookDetails from '../components/book_details/BookDetails'
 import Stacks from '../components/stacks/Stacks'
-// import Profile from '../components/profile/Profile'
+import Profile from '../components/profile/Profile'
 import Home from '../components/home/Home'
 
 const router = createBrowserRouter([
@@ -30,10 +30,10 @@ const router = createBrowserRouter([
                 path: '/stacks',
                 element: <Stacks />
             },
-            // {
-            //     path: '/user/edit',
-            //     element: <Profile />
-            // },
+            {
+                path: '/user/edit',
+                element: <Profile />
+            },
     ]}
 ])
 

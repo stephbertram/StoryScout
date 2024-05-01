@@ -182,7 +182,7 @@ const RegForm = () => {
 									{formik.errors.username}
 								</div>
 							)}
-							<label htmlFor="profile_file">Upload Profile Picture:</label>
+							<label htmlFor="profile_image">Upload Profile Picture:</label>
 							<input 
 								type='file' 
 								name='profile_image'

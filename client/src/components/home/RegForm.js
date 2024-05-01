@@ -60,18 +60,13 @@ const RegForm = () => {
 	const { user, login, logout } = useContext(UserContext)
 	const navigate = useNavigate()
 	const [isLogin, setIsLogin] = useState(true)
-	const [file, setFile] = useState(null)
-	
+
 
 	const requestUrl = isLogin ? '/login' : '/signup'
 
 	const handleIsLogin = () => {
 		setIsLogin(!isLogin)
 	}
-
-	const handleFileChange = (event) => {
-        setFile(event.currentTarget.files[0]); // Update file state
-    }
 
 	const formik = useFormik({
 		initialValues,
@@ -185,7 +180,6 @@ const RegForm = () => {
 					<br />
 					{isLogin ? 
 					<span onClick={handleIsLogin}>Not a member yet? <u>Sign up</u></span>
-					// <button type='button' className='change-form' onClick={handleIsLogin}>Create New Account</button>
 					: <span onClick={handleIsLogin}>Already a member? <u>Login</u></span>
 					}
 				</Form>
