@@ -67,7 +67,7 @@ const Stacks = () => {
     return(
         <div>
             <h3 className='stack'>Books in Your Stack</h3>
-            {mappedBooks.length > 0 ? mappedBooks : <p>Loading...</p>}
+            {mappedBooks.length > 0 ? mappedBooks : <p>There are no books in your stack yet.</p>}
         </div>
     )
 }

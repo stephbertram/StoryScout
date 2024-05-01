@@ -53,63 +53,111 @@ const loginSchema = object({
 		.required('Password is required.'),
 })
 
-const initialValues = {
-	username: '',
-	profile_image: '',
-	email: '',
-	_password_hash: '',
-	confirmPassword: ''
-}
+// const initialValues = {
+// 	username: '',
+// 	profile_image: null,
+// 	email: '',
+// 	_password_hash: '',
+// 	confirmPassword: ''
+// }
 
 const RegForm = () => {
-	const { user, login, logout } = useContext(UserContext)
+	const { login } = useContext(UserContext)
 	const navigate = useNavigate()
 	const [isLogin, setIsLogin] = useState(true)
-	const [file, setFile] = useState(null)
+	// const [file, setFile] = useState(null)
 	
 
-	const requestUrl = isLogin ? '/login' : '/signup'
+	// const requestUrl = isLogin ? '/login' : '/signup'
 
 	const handleIsLogin = () => {
 		setIsLogin(!isLogin)
 	}
 
-	const handleFileChange = (e) => {
-		if (e.target.files && e.target.files[0]) {
-			formik.setFieldValue("profile_image", e.target.files[0])
-			setFile(e.target.files[0])
-		}
-    }
+	// const handleFileChange = (e) => {
+	// 	if (e.target.files && e.target.files[0]) {
+	// 		formik.setFieldValue("profile_image", e.target.files[0])
+	// 		setFile(e.target.files[0])
+	// 	}
+    // }
+
+	// const formik = useFormik({
+	// 	initialValues,
+	// 	validationSchema: isLogin ? loginSchema : signupSchema,
+	// 	onSubmit: (values) => {
+	// 		const formData = new FormData()
+	// 			formData.append('profile_image', file)
+	// 		// Append other form data
+	// 		Object.keys(values).forEach(key => {
+	// 			if (key !== 'profile_image') {
+	// 				formData.append(key, values[key]);
+	// 			}
+	// 		})
+	
+	// 		fetch(requestUrl, {
+	// 			method: 'POST',
+	// 			body: formData
+	// 		}).then(res => res.json())
+	// 			.then(data => {
+	// 				if (data.error) {
+	// 					toast.error(data.error)
+	// 				} else {
+	// 					login(data);
+	// 					navigate('/books');
+	// 					toast.success('Logged in');
+	// 				}
+	// 			})
+	// 			.catch((error) => toast.error(error.message || 'An unexpected error occurred.'))
+	// 		}
+	// })
+
 
 	const formik = useFormik({
-		initialValues,
-		validationSchema: isLogin ? loginSchema : signupSchema,
-		onSubmit: (values) => {
-			const formData = new FormData();
-				formData.append('profile_image', file)
-			// Append other form data
-			Object.keys(values).forEach(key => {
-				if (key !== 'profile_image') {
-					formData.append(key, values[key]);
-				}
-			})
-	
-			fetch(requestUrl, {
-				method: 'POST',
-				body: formData
-			}).then(res => res.json())
-				.then(data => {
-					if (data.error) {
-						toast.error(data.error)
-					} else {
-						login(data);
-						navigate('/books');
-						toast.success('Logged in');
-					}
-				})
-				.catch((error) => toast.error(error.message || 'An unexpected error occurred'))
-			}
-	})
+        initialValues: {
+            username: '',
+            profile_image: null,
+            email: '',
+            _password_hash: '',
+            confirmPassword: ''
+        },
+        validationSchema: isLogin ? loginSchema : signupSchema,
+        onSubmit: (values) => {
+			console.log(values)
+            const formData = new FormData()
+            Object.keys(values).forEach(key => {
+                if (key === 'profile_image') {
+                    formData.append(key, values[key])
+                } else {
+                    formData.append(key, values[key])
+                }
+            })
+
+            fetch(isLogin ? '/login' : '/signup', {
+                method: 'POST',
+                body: formData,
+            }).then(res => res.json())
+            .then(data => {
+                if (data.error) {
+					console.log(data.error)
+                    toast.error(data.error)
+                } else {
+					console.log(data)
+                    login(data);
+                    navigate('/books')
+                    toast.success('Successfully logged in!')
+                }
+            })
+            .catch((error) => {
+				console.log(error)
+                toast.error('An unexpected error occurred.')
+            })
+        },
+    })
+
+    const handleFileChange = (event) => {
+		console.log(event.target.files[0])
+        formik.setFieldValue('profile_image', event.target.files[0]);
+    };
 
 	return (
 		<div className='auth'>
@@ -134,7 +182,7 @@ const RegForm = () => {
 									{formik.errors.username}
 								</div>
 							)}
-							<label htmlFor="profile_file">Upload Profile Picture:</label>
+							<label htmlFor="profile_image">Upload Profile Picture:</label>
 							<input 
 								type='file' 
 								name='profile_image'
