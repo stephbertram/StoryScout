@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import os
+
 #Signal Handling
 import signal
 import sys
@@ -15,11 +17,8 @@ from sqlalchemy.sql import func
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
-import logging
-import os
-# from cloudinary.utils import cloudinary_url
 from dotenv import load_dotenv
-load_dotenv()
+
 
 # Local imports
 from config import app, db, api
@@ -30,10 +29,9 @@ from models.review import Review
 from models.stack import Stack
 from models.user import User
 
-#Signal Handling
-def shutdown(signum, frame):
-    print("Shutting down from signal", signum)
-    sys.exit(0)
+#Cloudinary
+load_dotenv()
+config = cloudinary.config(secure=True)
 
 # Error Handling
 @app.errorhandler(NotFound)
@@ -242,6 +240,19 @@ class SignUp(Resource):
     def post(self):
         import ipdb; ipdb.set_trace()
         file = request.files['profile_image']
+        if file and file.filename:
+            try:
+                response = cloudinary.uploader.upload(
+                    file,
+                    upload_preset="StoryScout",
+                    unique_filename=True, 
+                    overwrite=True,
+                    eager=[{"width": 500, "crop": "fill"}]
+                )
+                image_url = response['eager'][0]['secure_url']
+            except Exception as e:
+                return {"Error": str(e)}, 500 
+
         data = request.form
         
         try:
@@ -249,7 +260,7 @@ class SignUp(Resource):
                 username=data['username'],
                 email=data['email'],
                 _password_hash=data['_password_hash'], 
-                profile_image=file.filename  # Assuming you save the filename or handle the file save
+                profile_image=image_url if file and file.filename else None
             )
             db.session.add(new_user)
             db.session.commit()
@@ -276,9 +287,15 @@ class Login(Resource):
             else:
                 return {"Error": "Invalid Login"}, 422
         except Exception as e:
-            return {"Error": str(e)}, 40
+            db.session.rollback()
+            return {"Error": str(e)}, 400
 api.add_resource(Login, '/login')
 
+
+#Signal Handling
+def shutdown(signum):
+    print("Shutting down from signal", signum)
+    sys.exit(0)
 
 
 # class SignUp(Resource):
@@ -343,31 +360,6 @@ class CheckMe(Resource):
         else:
             return {"Error": "Please log in."}, 400       
 api.add_resource(CheckMe, '/me')
-
-
-
-#Cloudinary Profile Pic Storage
-# @app.route("/upload", methods=['POST'])
-# def upload_file():
-#     app.logger.info('in upload route')
-
-#     cloudinary.config(cloud_name = os.getenv('CLOUD_NAME'), api_key=os.getenv('API_KEY'), 
-#         api_secret=os.getenv('API_SECRET'))
-#     upload_result = None
-#     if request.method == 'POST':
-#         file_to_upload = request.files['file']
-#         app.logger.info('%s file_to_upload', file_to_upload)
-#         if file_to_upload:
-#             upload_result = cloudinary.uploader.upload(file_to_upload)
-#             app.logger.info(upload_result)
-#             return jsonify(upload_result)
-    
-# class UploadFile(Resource): 
-#     def post(self): 
-#         file = request.files['file'] 
-#         file.save('/uploads/' + file.filename) 
-#         return 'File uploaded successfully!' 
-# api.add_resource(UploadFile, '/upload')
 
 
 if __name__ == '__main__':

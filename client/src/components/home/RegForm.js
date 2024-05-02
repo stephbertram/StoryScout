@@ -15,10 +15,6 @@ const signupSchema = object({
 		.min(3, 'Username must be at least 3 characters long.')
 		.max(20, 'Username must be 20 characters or less.')
 		.required('Username is required.'),
-	
-	// image: Yup.mixed() // Check if correct
-	// 	.test("FILE_SIZE", "File must be 1024x1024 or smaller.", (value) => value && value.size < 1024 * 1024)
-	// 	.test("FILE_TYPE", "File must be a png or jpeg.", (value) => value && ['image/png', 'image/jpeg'].includes(value.type)),
 
 	email: string().email("Invalid email format.")
 		.min(5, 'Email must be at least 5 characters long.')
@@ -53,64 +49,15 @@ const loginSchema = object({
 		.required('Password is required.'),
 })
 
-// const initialValues = {
-// 	username: '',
-// 	profile_image: null,
-// 	email: '',
-// 	_password_hash: '',
-// 	confirmPassword: ''
-// }
-
 const RegForm = () => {
 	const { login } = useContext(UserContext)
 	const navigate = useNavigate()
 	const [isLogin, setIsLogin] = useState(true)
-	// const [file, setFile] = useState(null)
 	const file = useRef(null)
-	
-
-	// const requestUrl = isLogin ? '/login' : '/signup'
 
 	const handleIsLogin = () => {
 		setIsLogin(!isLogin)
 	}
-
-	// const handleFileChange = (e) => {
-	// 	if (e.target.files && e.target.files[0]) {
-	// 		formik.setFieldValue("profile_image", e.target.files[0])
-	// 		setFile(e.target.files[0])
-	// 	}
-    // }
-
-	// const formik = useFormik({
-	// 	initialValues,
-	// 	validationSchema: isLogin ? loginSchema : signupSchema,
-	// 	onSubmit: (values) => {
-	// 		const formData = new FormData()
-	// 			formData.append('profile_image', file)
-	// 		// Append other form data
-	// 		Object.keys(values).forEach(key => {
-	// 			if (key !== 'profile_image') {
-	// 				formData.append(key, values[key]);
-	// 			}
-	// 		})
-	
-	// 		fetch(requestUrl, {
-	// 			method: 'POST',
-	// 			body: formData
-	// 		}).then(res => res.json())
-	// 			.then(data => {
-	// 				if (data.error) {
-	// 					toast.error(data.error)
-	// 				} else {
-	// 					login(data);
-	// 					navigate('/books');
-	// 					toast.success('Logged in');
-	// 				}
-	// 			})
-	// 			.catch((error) => toast.error(error.message || 'An unexpected error occurred.'))
-	// 		}
-	// })
 
 	const handleSubmit = (event, values) => {
 		event.preventDefault()
@@ -132,19 +79,10 @@ const RegForm = () => {
 			}
 		})
 		.catch((error) => {
-			console.log(error)
 			toast.error('An unexpected error occurred.')
 		})
 	
 	}
-	const formik = useFormik({
-       
-    })
-
-    // const handleFileChange = (event) => {
-	// 	console.log(event.target.files[0])
-    //     formik.setFieldValue('profile_image', event.target.files[0]);
-    // };
 
 	return (
 		<div className='auth'>
