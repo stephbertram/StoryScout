@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import { UserContext } from '../context/UserContext'
 import toast from 'react-hot-toast'
+import { Button } from 'semantic-ui-react'
 
 const BookDetails = () => {
     const { user } = useContext(UserContext)

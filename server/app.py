@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import os
+
 #Signal Handling
 import signal
 import sys
@@ -15,11 +17,8 @@ from sqlalchemy.sql import func
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
-import logging
-import os
-# from cloudinary.utils import cloudinary_url
 from dotenv import load_dotenv
-load_dotenv()
+
 
 # Local imports
 from config import app, db, api
@@ -30,10 +29,9 @@ from models.review import Review
 from models.stack import Stack
 from models.user import User
 
-#Signal Handling
-def shutdown(signum, frame):
-    print("Shutting down from signal", signum)
-    sys.exit(0)
+#Cloudinary
+load_dotenv()
+config = cloudinary.config(secure=True)
 
 # Error Handling
 @app.errorhandler(NotFound)
@@ -50,11 +48,38 @@ def login_required(func):
     return decorated_function
 
 # API Routes
+# class AllBooks(Resource):
+#     def get(self):
+#         try:
+#             all_books = [book.to_dict() for book in Book.query]
+#             return all_books, 200
+#         except Exception as e:
+#             return {"Error": str(e)}, 400
+# api.add_resource(AllBooks, "/books")
+
 class AllBooks(Resource):
     def get(self):
         try:
-            all_books = [book.to_dict() for book in Book.query]
-            return all_books, 200
+            topic = request.args.get('topic')
+            rating = request.args.get('rating')
+            rec_age = request.args.get('rec_age')
+            
+            query = Book.query
+            
+            if topic:
+                query = query.filter(Book.topic == topic)
+            if rating or rec_age:
+                subquery = db.session.query(Review.book_id).group_by(Review.book_id)
+                if rating:
+                    subquery = subquery.having(db.func.avg(Review.rating) >= int(rating))
+                if rec_age:
+                    subquery = subquery.filter(Review.rec_age == rec_age)
+                query = query.filter(Book.id.in_(subquery))
+            
+            books = query.all()
+            filtered_books = [book.to_dict() for book in books]
+            import ipdb; ipdb.set_trace()
+            return filtered_books, 200
         except Exception as e:
             return {"Error": str(e)}, 400
 api.add_resource(AllBooks, "/books")
@@ -238,56 +263,35 @@ api.add_resource(RemoveBookFromStack, '/<int:user_id>/remove_book/<int:book_id>'
 
 
 # User Management
-# class SignUp(Resource):
-#     def post(self):
-#         file = request.files['profile_image']
-#         data = request.form
-#         import ipdb; ipdb.set_trace()
-#         try:
-#             new_user = User(
-#                 username=data['username'],
-#                 email=data['email'],
-#                 _password_hash=data['_password_hash'], 
-#                 profile_image=file.filename  # Assuming you save the filename or handle the file save
-#             )
-#             db.session.add(new_user)
-#             db.session.commit()
 
-#             # Optional: Save file to a directory or storage service here
-
-#             new_stack = Stack(name="Stack1", user_id=new_user.id)
-#             db.session.add(new_stack)
-#             db.session.commit()
-
-#             session['user_id'] = new_user.id
-#             return new_user.to_dict(), 201
-#         except Exception as e:
-#             db.session.rollback()
-#             return {"Error": str(e)}, 400
-# api.add_resource(SignUp, '/signup')
-
-# class Login(Resource):
-#     def post(self):
-#         try:  
-#             data = request.get_json()
-#             user = User.query.filter_by(email=data.get("email")).first()
-#             if user and user.authenticate(data.get('_password_hash')):
-#                 session["user_id"] = user.id
-#                 return user.to_dict(), 200
-#             else:
-#                 return {"Error": "Invalid Login"}, 422
-#         except Exception as e:
-#             return {"Error": str(e)}, 40
-# api.add_resource(Login, '/login')
-
-
-
+# Signup WITH Image
 class SignUp(Resource):
     def post(self):
+        file = request.files['profile_image']
+        import ipdb; ipdb.set_trace()
+        if file:
+            try:
+                response = cloudinary.uploader.upload(
+                    file,
+                    upload_preset="StoryScout",
+                    unique_filename=True, 
+                    overwrite=True,
+                    eager=[{"width": 500, "crop": "fill"}]
+                )
+                image_url = response['eager'][0]['secure_url']
+                return image_url
+            except Exception as e:
+                return {"Error": str(e)}, 500 
+
+        data = request.form
+        
         try:
-            data = request.get_json()
-            new_user = User(username=data.get('username'), email=data.get('email'))
-            new_user.password_hash = data.get('_password_hash')
+            new_user = User(
+                username=data['username'],
+                email=data['email'],
+                _password_hash=data['_password_hash'], 
+                profile_image=image_url if file and file.filename else None
+            )
             db.session.add(new_user)
             db.session.commit()
 
@@ -301,6 +305,31 @@ class SignUp(Resource):
             db.session.rollback()
             return {"Error": str(e)}, 400
 api.add_resource(SignUp, '/signup')
+
+
+
+# Signup WITHOUT Image
+# class SignUp(Resource):
+#     def post(self):
+#         try:
+#             data = request.get_json()
+#             new_user = User(username=data.get('username'), email=data.get('email'))
+#             new_user.password_hash = data.get('_password_hash')
+#             db.session.add(new_user)
+#             db.session.commit()
+
+#             new_stack = Stack(name="Stack1", user_id=new_user.id)
+#             db.session.add(new_stack)
+#             db.session.commit()
+
+#             session['user_id'] = new_user.id
+#             return new_user.to_dict(), 201
+#         except Exception as e:
+#             db.session.rollback()
+#             return {"Error": str(e)}, 400
+# api.add_resource(SignUp, '/signup')
+
+
 
 
 class Login(Resource):
@@ -319,7 +348,10 @@ class Login(Resource):
 api.add_resource(Login, '/login')
 
 
-
+#Signal Handling
+def shutdown(signum):
+    print("Shutting down from signal", signum)
+    sys.exit(0)
 
 
 class Logout(Resource):
@@ -344,31 +376,6 @@ class CheckMe(Resource):
         else:
             return {"Error": "Please log in."}, 400       
 api.add_resource(CheckMe, '/me')
-
-
-
-#Cloudinary Profile Pic Storage
-# @app.route("/upload", methods=['POST'])
-# def upload_file():
-#     app.logger.info('in upload route')
-
-#     cloudinary.config(cloud_name = os.getenv('CLOUD_NAME'), api_key=os.getenv('API_KEY'), 
-#         api_secret=os.getenv('API_SECRET'))
-#     upload_result = None
-#     if request.method == 'POST':
-#         file_to_upload = request.files['file']
-#         app.logger.info('%s file_to_upload', file_to_upload)
-#         if file_to_upload:
-#             upload_result = cloudinary.uploader.upload(file_to_upload)
-#             app.logger.info(upload_result)
-#             return jsonify(upload_result)
-    
-# class UploadFile(Resource): 
-#     def post(self): 
-#         file = request.files['file'] 
-#         file.save('/uploads/' + file.filename) 
-#         return 'File uploaded successfully!' 
-# api.add_resource(UploadFile, '/upload')
 
 
 if __name__ == '__main__':

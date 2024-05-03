@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import * as Yup from 'yup'
@@ -49,62 +49,57 @@ const loginSchema = object({
 		.required('Password is required.'),
 })
 
-const initialValues = {
-	username: '',
-	email: '',
-	_password_hash: '',
-	confirmPassword: ''
-}
-
 const RegForm = () => {
-	const { user, login, logout } = useContext(UserContext)
+	const { login } = useContext(UserContext)
 	const navigate = useNavigate()
 	const [isLogin, setIsLogin] = useState(true)
-
-
-	const requestUrl = isLogin ? '/login' : '/signup'
+	const file = useRef(null)
 
 	const handleIsLogin = () => {
 		setIsLogin(!isLogin)
 	}
 
-	const formik = useFormik({
-		initialValues,
-		validationSchema: isLogin ? loginSchema : signupSchema,
-		onSubmit: (formData) => {
-			console.log(formData)
-			fetch(requestUrl, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(formData)
-			}).then((res) => {
-				if (res.ok) {
-					res.json()
-						.then((userData) => {
-							login(userData)
-						})
-						.then(() => {
-							navigate('/books') 
-							toast.success('Logged in')
-						})
-					console.log(user)
-				} else if (res.status === 422) {
-					toast.error('Invalid Login')
-				} else {
-					return res
-						.json()
-						.then((errorObj) => toast.error(errorObj.Error))}
-			})
-		}
-	})
+	const handleSubmit = (event, values) => {
+		event.preventDefault()
+		console.log(values)
+		const formData = new FormData(event.target)
+		fetch(isLogin ? '/login' : '/signup', {
+			method: 'POST',
+			body: formData,
+		}).then(res => res.json())
+		.then(data => {
+			if (data.error) {
+				console.log(data.error)
+				toast.error(data.error)
+			} else {
+				console.log(data)
+				login(data);
+				navigate('/books')
+				toast.success('Successfully logged in!')
+			}
+		})
+		.catch((error) => {
+			toast.error('An unexpected error occurred.')
+		})
+	
+	}
 
 	return (
 		<div className='auth'>
 			<h2>{isLogin ? 'Login':'Sign Up'}</h2>
-			<Formik onSubmit={formik.handleSubmit}>
-				<Form className='form' onSubmit={formik.handleSubmit}>
+			<Formik
+				initialValues = {{
+					username: '',
+					profile_image: null,
+					email: '',
+					_password_hash: '',
+					confirmPassword: ''
+				}}
+				validationSchema = {isLogin ? loginSchema : signupSchema}
+				onSubmit = {handleSubmit}
+			>
+				{({ values, onChange, onBlur, errors, touched }) => (
+					<Form className='form' onSubmit={e => handleSubmit(e, values)}>
 					{/* If signup, show username field */}
 					{!isLogin && (
 						<>
@@ -112,48 +107,56 @@ const RegForm = () => {
 								type='text'
 								name='username'
 								placeholder='Username'
-								onChange={formik.handleChange}
-								onBlur={formik.handleBlur}
-								value={formik.values.username}
+								// onChange={formik.handleChange}
+								// onBlur={formik.handleBlur}
+								// value={formik.values.username}
 								className='input'
 								autoComplete='username'
 							/>
-							{formik.errors.username && formik.touched.username && (
+							{errors.username && touched.username && (
 								<div className='error-message show'>
-									{formik.errors.username}
+									{errors.username}
 								</div>
 							)}
+							<label htmlFor="profile_image">Upload Profile Picture:</label>
+							<input 
+								type='file' 
+								name='profile_image'
+								ref={file}
+								// onBlur={handleBlur}
+								className='input'
+							/>
 						</>
 					)}
 					<Field
 						type='text'
 						name='email'
 						placeholder='Email'
-						onChange={formik.handleChange}
-						onBlur={formik.handleBlur}
-						value={formik.values.email}
+						// onChange={handleChange}
+						// onBlur={handleBlur}
+						// value={values.email}
 						className='input'
 						autoComplete='email'
 					/>
-					{formik.errors.email && formik.touched.email && (
+					{errors.email && touched.email && (
 						<div className='error-message show'>
-							{formik.errors.email}
+							{errors.email}
 						</div>
 					)}
 					<Field
 						type='password'
 						name='_password_hash'
 						placeholder='Password'
-						onChange={formik.handleChange}
-						onBlur={formik.handleBlur}
-						value={formik.values._password_hash}
+						// onChange={handleChange}
+						// onBlur={handleBlur}
+						// value={values._password_hash}
 						className='input'
 						autoComplete='current-password'
 					/>
-					{formik.errors._password_hash &&
-						formik.touched._password_hash && (
+					{errors._password_hash &&
+						touched._password_hash && (
 							<div className='error-message show'>
-								{formik.errors._password_hash}
+								{errors._password_hash}
 							</div>
 						)}
 					{/* If signup, show confirm password field */}
@@ -163,15 +166,15 @@ const RegForm = () => {
 								type='password'
 								name='confirmPassword'
 								placeholder='Confirm Password'
-								onChange={formik.handleChange}
-								onBlur={formik.handleBlur}
-								value={formik.values.confirmPassword}
+								// onChange={handleChange}
+								// onBlur={handleBlur}
+								// value={values.confirmPassword}
 								className='input'
 							/>
-							{formik.errors.confirmPassword &&
-								formik.touched.confirmPassword && (
+							{errors.confirmPassword &&
+								touched.confirmPassword && (
 									<div className='error-message show'>
-										{formik.errors.confirmPassword}
+										{errors.confirmPassword}
 									</div>
 								)}
 						</>
@@ -183,6 +186,7 @@ const RegForm = () => {
 					: <span onClick={handleIsLogin}>Already a member? <u>Login</u></span>
 					}
 				</Form>
+				)}
 			</Formik>
 		</div>
 )}
