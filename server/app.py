@@ -48,14 +48,46 @@ def login_required(func):
     return decorated_function
 
 # API Routes
+# class AllBooks(Resource):
+#     def get(self):
+#         try:
+#             all_books = [book.to_dict() for book in Book.query]
+#             return all_books, 200
+#         except Exception as e:
+#             return {"Error": str(e)}, 400
+# api.add_resource(AllBooks, "/books")
+
 class AllBooks(Resource):
     def get(self):
         try:
-            all_books = [book.to_dict() for book in Book.query]
-            return all_books, 200
+            topic = request.args.get('topic')
+            rating = request.args.get('rating')
+            rec_age = request.args.get('rec_age')
+            
+            query = Book.query
+            
+            if topic:
+                query = query.filter(Book.topic == topic)
+            if rating or rec_age:
+                subquery = db.session.query(Review.book_id).group_by(Review.book_id)
+                if rating:
+                    subquery = subquery.having(db.func.avg(Review.rating) >= int(rating))
+                if rec_age:
+                    subquery = subquery.filter(Review.rec_age == rec_age)
+                query = query.filter(Book.id.in_(subquery))
+            
+            books = query.all()
+            filtered_books = [book.to_dict() for book in books]
+            import ipdb; ipdb.set_trace()
+            return filtered_books, 200
         except Exception as e:
             return {"Error": str(e)}, 400
 api.add_resource(AllBooks, "/books")
+
+
+
+
+
 
 
 class BookById(Resource):
@@ -238,9 +270,9 @@ api.add_resource(RemoveBookFromStack, '/<int:user_id>/remove_book/<int:book_id>'
 # User Management
 class SignUp(Resource):
     def post(self):
-        import ipdb; ipdb.set_trace()
         file = request.files['profile_image']
-        if file and file.filename:
+        import ipdb; ipdb.set_trace()
+        if file:
             try:
                 response = cloudinary.uploader.upload(
                     file,
@@ -250,6 +282,7 @@ class SignUp(Resource):
                     eager=[{"width": 500, "crop": "fill"}]
                 )
                 image_url = response['eager'][0]['secure_url']
+                # return image_url
             except Exception as e:
                 return {"Error": str(e)}, 500 
 
