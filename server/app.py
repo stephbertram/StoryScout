@@ -85,11 +85,6 @@ class AllBooks(Resource):
 api.add_resource(AllBooks, "/books")
 
 
-
-
-
-
-
 class BookById(Resource):
     def get(self, book_id):
         try:
@@ -268,6 +263,8 @@ api.add_resource(RemoveBookFromStack, '/<int:user_id>/remove_book/<int:book_id>'
 
 
 # User Management
+
+# Signup WITH Image
 class SignUp(Resource):
     def post(self):
         file = request.files['profile_image']
@@ -282,7 +279,7 @@ class SignUp(Resource):
                     eager=[{"width": 500, "crop": "fill"}]
                 )
                 image_url = response['eager'][0]['secure_url']
-                # return image_url
+                return image_url
             except Exception as e:
                 return {"Error": str(e)}, 500 
 
@@ -309,28 +306,9 @@ class SignUp(Resource):
             return {"Error": str(e)}, 400
 api.add_resource(SignUp, '/signup')
 
-class Login(Resource):
-    def post(self):
-        try:  
-            data = request.get_json()
-            user = User.query.filter_by(email=data.get("email")).first()
-            if user and user.authenticate(data.get('_password_hash')):
-                session["user_id"] = user.id
-                return user.to_dict(), 200
-            else:
-                return {"Error": "Invalid Login"}, 422
-        except Exception as e:
-            db.session.rollback()
-            return {"Error": str(e)}, 400
-api.add_resource(Login, '/login')
 
 
-#Signal Handling
-def shutdown(signum):
-    print("Shutting down from signal", signum)
-    sys.exit(0)
-
-
+# Signup WITHOUT Image
 # class SignUp(Resource):
 #     def post(self):
 #         try:
@@ -352,23 +330,28 @@ def shutdown(signum):
 # api.add_resource(SignUp, '/signup')
 
 
-# class Login(Resource):
-#     def post(self):
-#         try:  
-#             data = request.get_json()
-#             user = User.query.filter_by(email=data.get("email")).first()
-#             if user and user.authenticate(data.get('_password_hash')):
-#                 session["user_id"] = user.id
-#                 return user.to_dict(), 200
-#             else:
-#                 return {"Error": "Invalid Login"}, 422
-#         except Exception as e:
-#             db.session.rollback()
-#             return {"Error": str(e)}, 400
-# api.add_resource(Login, '/login')
 
 
+class Login(Resource):
+    def post(self):
+        try:  
+            data = request.get_json()
+            user = User.query.filter_by(email=data.get("email")).first()
+            if user and user.authenticate(data.get('_password_hash')):
+                session["user_id"] = user.id
+                return user.to_dict(), 200
+            else:
+                return {"Error": "Invalid Login"}, 422
+        except Exception as e:
+            db.session.rollback()
+            return {"Error": str(e)}, 400
+api.add_resource(Login, '/login')
 
+
+#Signal Handling
+def shutdown(signum):
+    print("Shutting down from signal", signum)
+    sys.exit(0)
 
 
 class Logout(Resource):
