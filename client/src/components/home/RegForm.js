@@ -85,8 +85,9 @@ const RegForm = () => {
 	}
 
 	return (
-		<div className='auth'>
-			<h2>{isLogin ? 'Login':'Sign Up'}</h2>
+		<div className='content-container'>
+				<h2>Discover your child's next favorite book, guided by trusted ratings and reviews from fellow parents.</h2>
+				<h2>{isLogin ? 'Login':'Sign Up'}</h2>
 			<Formik
 				initialValues = {{
 					username: '',

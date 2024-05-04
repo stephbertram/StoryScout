@@ -1,74 +1,95 @@
-/* http://meyerweb.com/eric/tools/css/reset/ 
-   v2.0 | 20110126
-   License: none (public domain)
-*/
-
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	/* vertical-align: baseline; */
-}
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
-	display: block;
-}
-body {
-	line-height: 1;
-  max-width: 600px;
-}
-ol, ul {
-	list-style: none;
-}
-blockquote, q {
-	quotes: none;
-}
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: '';
-	content: none;
-}
-table {
-	border-collapse: collapse;
-	border-spacing: 0;
-}
-
-/* Start Styles */
 // Typography
 $font-primary: "Noto Sans", sans-serif;
 $font-accent: "Autour One", Verdana, Tahoma, sans-serif;
 $font-default: 400;
 
 // Colors
-$text: snow;
-$offwhite: #f8f8ea;
-$barelyblue: #d4e6f2;
-$lilac: #ccc1d5;
-$greyblue: #a3b4dc;
-$goldochre: #febd0f;
-$grapefruit: #f26d79;
-$dkgrapefruit: #cc6666;
-$purple: #6d69ac;
-$bg: #19194d;
+$blue: #004AAD;
+$green: #39BB00;
+$yellow: #FFCC00;
+$lt-orange: #F1B690;
+$orange: #EF7529;
+$gray: lightgray;
 $black: #000;
 
 
+body {
+	line-height: 1;
+    font-family: 'Noto Sans', sans-serif;
+}
 // Links & Buttons
 
 
-// 
+// Homepage
+
+.homepage-container {
+    display: flex; 
+    align-items: flex-start; 
+	width: 100%;
+}
+
+.image-container {
+	display: flex;   
+    width: 50%; 
+	justify-content: center;
+	padding-top: 20px;
+}
+
+.content-container {
+    flex: 1;  
+    width: 50%;  
+	padding-top: 20px;
+	padding-right: 60px;
+}
+
+.image-container > img {
+	height: 500px; 
+	width: 500px
+}
+
+form {
+    margin-top: 20px;
+}
+
+// Nav
+
+header {
+    display: flex; /* Establishes a flex container */
+    align-items: center; /* Aligns children vertically in the center */
+    justify-content: space-between; /* Spaces out main items */
+    padding: 10px 20px; /* Adds some padding around the header */
+	flex-wrap: nowrap;
+}
+
+#text-logo{
+    height: 75px; /* Sets a fixed height for logos */
+    margin-left: 10px; /* Adds space between the text logo and image logo */
+}
+
+#logo {
+    height: 75px; /* Sets a fixed height for logos */
+    margin-left: 5px; /* Adds space between the text logo and image logo */
+	margin-bottom: 3px;
+}
+
+nav {
+    display: flex; /* Establishes a flex container for the links */
+    justify-content: flex-end; /* Aligns nav links to the right */
+    align-items: center; /* Aligns nav links vertically */
+    gap: 20px; /* Adds space between each link */
+    flex-grow: 1; /* Allows the nav to take up remaining space */
+}
+
+.nav-link {
+    text-decoration: none;
+    color: black; /* Sets text color, change as needed */
+	font-family: $font-primary;
+	font-size: medium;
+    padding: 5px 10px; /* Adds padding to the links */
+    border-radius: 5px; /* Optional: rounds the corners of the link backgrounds */
+}
+
+.nav-link:hover {
+    background-color: lightgray; /* Optional: change background on hover */
+    transition: background-color 0.3s; /* Smooth transition for background color */
+}

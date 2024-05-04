@@ -1,12 +1,13 @@
 import RegForm from './RegForm'
-import { Image } from 'semantic-ui-react'
 
 const Home = () => {
     return(
-        <>
-            <img src='homepage.png' id='homepage-image' alt='parent reading with child'/>
+        <div class='homepage-container'>
+            <div class='image-container'>
+                <img src='homepage.png' alt='parent reading with child'/>
+            </div>
             <RegForm />
-        </>
+        </div>
     )
 }
 
