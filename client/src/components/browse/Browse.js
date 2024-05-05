@@ -81,7 +81,7 @@ const Browse = () => {
                     {topics.map(topic => <option key={topic} value={topic}>{topic}</option>)}
                 </select>
                 <select value={rating} onChange={handleRatingChange}>
-                    <option value="">Select Av. Rating</option>
+                    <option value="">Select Average Rating</option>
                     {ratings.map(rating => <option key={rating} value={rating}>{rating}</option>)}
                 </select>
                 <select value={recAge} onChange={handleRecAgeChange}>

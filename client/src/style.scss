@@ -1,9 +1,11 @@
 // Typography
+
 $font-primary: "Noto Sans", sans-serif;
 $font-accent: "Autour One", Verdana, Tahoma, sans-serif;
 $font-default: 400;
 
 // Colors
+
 $blue: #004AAD;
 $green: #39BB00;
 $lt-green: #B7E5AA;
@@ -13,6 +15,7 @@ $lt-yellow: #FFEBAE;
 $orange: #F49200;
 $med-orange: #FDB549;
 $lt-orange: #FFC56D;
+$med-gray: #ccc;
 $gray: gray;
 $lt-gray: #EFEFEF;
 $black: #000;
@@ -40,9 +43,8 @@ body {
 }
 
 .submit:hover {
-    background-color: $orange /* Background color on hover */
+    background-color: $orange
 }
-
 
 // Homepage
 
@@ -111,9 +113,9 @@ body {
 // Nav
 
 header {
-    display: flex; /* Establishes a flex container */
-    align-items: center; /* Aligns children vertically in the center */
-    justify-content: space-between; /* Spaces out main items */
+    display: flex; 
+    align-items: center; // Aligns children vertically in the center
+    justify-content: space-between; // Spaces out main items
     padding: 10px 20px;
 	flex-wrap: nowrap;
 }
@@ -123,31 +125,31 @@ header {
 }
 
 #logo {
-    height: 75px; /* Sets a fixed height for logos */
-    margin-left: 5px; /* Adds space between the text logo and image logo */
+    height: 75px; 
+    margin-left: 5px; 
 	margin-bottom: 3px;
 }
 
 nav {
-    display: flex; /* Establishes a flex container for the links */
-    justify-content: flex-end; /* Aligns nav links to the right */
-    align-items: center; /* Aligns nav links vertically */
-    gap: 20px; /* Adds space between each link */
-    flex-grow: 1; /* Allows the nav to take up remaining space */
+    display: flex; 
+    justify-content: flex-end; // Aligns nav links to the right
+    align-items: center; // Aligns nav links vertically
+    gap: 20px; // Adds space between each link
+    flex-grow: 1; // Allows the nav to take up remaining space
 }
 
 .nav-link {
     text-decoration: none;
-    color: black; /* Sets text color, change as needed */
+    color: black; 
 	font-family: $font-primary;
 	font-size: medium;
-    padding: 5px 10px; /* Adds padding to the links */
-    border-radius: 5px; /* Optional: rounds the corners of the link backgrounds */
+    padding: 5px 10px; 
+    border-radius: 5px; 
 }
 
 .nav-link:hover {
-    background-color: $lt-yellow; /* Optional: change background on hover */
-    transition: background-color 0.3s; /* Smooth transition for background color */
+    background-color: $lt-yellow; 
+    transition: background-color 0.3s; 
 }
 
 
@@ -178,26 +180,26 @@ nav {
 }
 
 .filters {
-    display: flex; /* Aligns all select elements in a row */
-    justify-content: flex-start; /* Spaces out the select elements evenly */
-    margin: 20px 0px; /* Adds margin around the container */
+    display: flex; 
+    justify-content: flex-start; 
+    margin: 20px 0px; 
 }
 
 .filters select {
 	width: 190px;
-    padding: 4px 4px; /* Adds padding inside each select box for better text visibility */
-	margin-left: 8px;
-    border: 2px solid #ccc; /* Adds a light grey border to the select elements */
-    border-radius: 3px; /* Rounds the corners of the select elements */
-    cursor: pointer; /* Changes the cursor to a pointer to indicate interactivity */
-    transition: border-color 0.3s; /* Smooth transition for border color change */
+    padding: 4px 4px; 
+	margin-right: 8px;
+    border: 2px solid $med-gray; 
+    border-radius: 3px; 
+    cursor: pointer; 
+    transition: border-color 0.3s; 
 }
 
 .filters select:hover {
-    border-color: $lt-green; /* Changes the border color on hover for visual feedback */
+    border-color: $lt-green; 
 }
 
 .filters select:focus {
-    border-color: $lt-green; /* Changes the border color when the select is focused */
-    outline: none; /* Removes the default focus outline to use a custom border style */
+    border-color: $lt-green; 
+    outline: none; 
 }
