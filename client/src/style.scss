@@ -6,10 +6,14 @@ $font-default: 400;
 // Colors
 $blue: #004AAD;
 $green: #39BB00;
+$lt-green: #B7E5AA;
 $yellow: #FFCC00;
-$lt-orange: #F1B690;
-$orange: #EF7529;
-$gray: lightgray;
+$lt-yellow: #FFEBAE;
+$orange: #F49200;
+$med-orange: #FDB549;
+$lt-orange: #FFC56D;
+$gray: gray;
+$lt-gray: #EFEFEF;
 $black: #000;
 
 
@@ -18,6 +22,24 @@ body {
     font-family: 'Noto Sans', sans-serif;
 }
 // Links & Buttons
+
+.submit {
+	margin-bottom: 16px;
+	height: 2em;
+	width: 18em;
+	text-transform: uppercase;
+	font-weight: 700;
+	color: $black;
+	background-color: $med-orange;
+	border: none;
+	border-radius: 3px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.submit:hover {
+    background-color: $orange /* Background color on hover */
+}
 
 
 // Homepage
@@ -39,7 +61,12 @@ body {
     flex: 1;  
     width: 50%;  
 	padding-top: 20px;
-	padding-right: 60px;
+	padding-right: 110px;
+}
+
+.content-container > h3 {
+	font-family: $font-accent;
+	padding-top: 20px;
 }
 
 .image-container > img {
@@ -47,8 +74,36 @@ body {
 	width: 500px
 }
 
-form {
-    margin-top: 20px;
+.form {
+	font-family: $font-primary;
+	color: $gray; // Text below login button
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: left;
+}
+
+.form > label {
+	font-size: small;
+	margin: 2px 0px 6px 2px; // Top, right, bottom, left
+}
+
+.input {
+	margin-bottom: 16px;
+	padding: 3px 6px;
+	width: 17em;
+	height: 2em;
+	color: $black;
+	background-color: $lt-gray;
+	border-radius: 3px;
+	border: none;
+}
+
+.reg-link {
+    cursor: pointer; 
+}
+
+.reg-link:hover {
+    color: $black; 
 }
 
 // Nav
@@ -57,13 +112,13 @@ header {
     display: flex; /* Establishes a flex container */
     align-items: center; /* Aligns children vertically in the center */
     justify-content: space-between; /* Spaces out main items */
-    padding: 10px 20px; /* Adds some padding around the header */
+    padding: 10px 20px;
 	flex-wrap: nowrap;
 }
 
 #text-logo{
-    height: 75px; /* Sets a fixed height for logos */
-    margin-left: 10px; /* Adds space between the text logo and image logo */
+    height: 75px; 
+    margin-left: 10px;
 }
 
 #logo {
@@ -90,6 +145,7 @@ nav {
 }
 
 .nav-link:hover {
-    background-color: lightgray; /* Optional: change background on hover */
+    background-color: $lt-yellow; /* Optional: change background on hover */
     transition: background-color 0.3s; /* Smooth transition for background color */
 }
+
