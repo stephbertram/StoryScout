@@ -8,20 +8,22 @@ const Nav = () => {
 	
     return (
         <header>
-            <h1>StoryScout</h1>
+
+            <img src='/text-logo.png' id="text-logo" alt="StoryScout" />
+            <img src='/logo.png' id="logo" alt="book with microscope logo" />
             <nav>
-                {/* Always show these links if there is a user logged in */}
+                {/* Show links if there is a user logged in */}
                 {user && (
                     <>
-                        <NavLink id='link' to='/books' className='nav-link'>Browse Books</NavLink>
-                        <NavLink id='link' to='/stacks' className='nav-link'>View Stack</NavLink>
-                        <NavLink id='link' to='/user/edit' className='nav-link'>Profile</NavLink>
-                        <NavLink id='link' to='/' className='nav-link' onClick={logout}>Logout</NavLink>
+                        <NavLink to='/books' className='nav-link'>Browse Books</NavLink>
+                        <NavLink to='/stacks' className='nav-link'>View Stack</NavLink>
+                        <NavLink to='/user/edit' className='nav-link'>Profile</NavLink>
+                        <NavLink to='/' className='nav-link' onClick={logout}>Logout</NavLink>
                     </>
                 )}
                 {/* Show the Home link only if there is no user and we are not on the homepage */}
                 {!user && location.pathname !== '/' && (
-                    <NavLink id='link' to='/' className='nav-link'>Home</NavLink>
+                    <NavLink to='/' className='nav-link'>Home</NavLink>
                 )}
             </nav>
         </header>

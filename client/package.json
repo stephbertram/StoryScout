@@ -13,14 +13,13 @@
     "react-hot-toast": "^2.4.1",
     "react-router-dom": "^6.22.3",
     "react-scripts": "5.0.1",
-    "semantic-ui-css": "^2.5.0",
-    "semantic-ui-react": "^2.1.5",
     "web-vitals": "^2.1.4",
     "yup": "^1.4.0",
     "yup-password": "^0.4.0"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "sass": "^1.76.0"
   },
   "scripts": {
     "start": "react-scripts start",

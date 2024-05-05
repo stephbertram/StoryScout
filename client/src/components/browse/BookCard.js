@@ -8,7 +8,7 @@ const BookCard = ({ id, title, author, cover_photo }) => {
     };
 
     return (
-        <div id='book-container' onClick={handleNavigate}>
+        <div className='book-container' onClick={handleNavigate}>
             <div id='book-cover-photo'>
                 <img src={cover_photo} alt={title} />
             </div>

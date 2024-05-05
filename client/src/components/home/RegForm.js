@@ -85,8 +85,9 @@ const RegForm = () => {
 	}
 
 	return (
-		<div className='auth'>
-			<h2>{isLogin ? 'Login':'Sign Up'}</h2>
+		<div className='content-container'>
+				<h2>Discover your child's next favorite book, guided by trusted ratings and reviews from fellow parents.</h2>
+				<h3>{isLogin ? 'Login':'Sign Up'}</h3>
 			<Formik
 				initialValues = {{
 					username: '',
@@ -118,7 +119,7 @@ const RegForm = () => {
 									{errors.username}
 								</div>
 							)}
-							<label htmlFor="profile_image">Upload Profile Picture:</label>
+							<label htmlFor="profile_image"> Profile Picture (Optional):</label>
 							<input 
 								type='file' 
 								name='profile_image'
@@ -182,8 +183,8 @@ const RegForm = () => {
 					<input type='submit' className='submit' value={isLogin ? 'Login' : 'Sign up'} />
 					<br />
 					{isLogin ? 
-					<span onClick={handleIsLogin}>Not a member yet? <u>Sign up</u></span>
-					: <span onClick={handleIsLogin}>Already a member? <u>Login</u></span>
+					<span onClick={handleIsLogin}>Not a member yet? <u class="reg-link">Sign up</u></span>
+					: <span onClick={handleIsLogin}>Already a member? <u class="reg-link">Login</u></span>
 					}
 				</Form>
 				)}

@@ -73,15 +73,15 @@ const Browse = () => {
     ))
 
     return (
-        <div>
-            <h3 className='browse'>Browse Books</h3>
-            <div>
+        <div className="browse-container">
+            <h3>Browse Books</h3>
+            <div className="filters">
                 <select value={topic} onChange={handleTopicChange}>
                     <option value="">Select Topic</option>
                     {topics.map(topic => <option key={topic} value={topic}>{topic}</option>)}
                 </select>
                 <select value={rating} onChange={handleRatingChange}>
-                    <option value="">Select Av. Rating</option>
+                    <option value="">Select Average Rating</option>
                     {ratings.map(rating => <option key={rating} value={rating}>{rating}</option>)}
                 </select>
                 <select value={recAge} onChange={handleRecAgeChange}>
