@@ -8,6 +8,7 @@ $blue: #004AAD;
 $green: #39BB00;
 $lt-green: #B7E5AA;
 $yellow: #FFCC00;
+$med-yellow: #FFE185;
 $lt-yellow: #FFEBAE;
 $orange: #F49200;
 $med-orange: #FDB549;
@@ -21,6 +22,7 @@ body {
 	line-height: 1;
     font-family: 'Noto Sans', sans-serif;
 }
+
 // Links & Buttons
 
 .submit {
@@ -65,8 +67,8 @@ body {
 }
 
 .content-container > h3 {
-	font-family: $font-accent;
 	padding-top: 20px;
+	font-family: $font-accent;
 }
 
 .image-container > img {
@@ -118,7 +120,6 @@ header {
 
 #text-logo{
     height: 75px; 
-    margin-left: 10px;
 }
 
 #logo {
@@ -149,3 +150,54 @@ nav {
     transition: background-color 0.3s; /* Smooth transition for background color */
 }
 
+
+// Edit Profile
+
+.edit-profile > button {
+	margin-bottom: 16px;
+	height: 2em;
+	width: 18em;
+	text-transform: uppercase;
+	font-weight: 700;
+	color: $black;
+	background-color: $med-yellow;
+	border: none;
+	border-radius: 3px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.edit-profile > button:hover {
+    background-color: $yellow
+}
+
+// Browse Books
+
+.browse-container {
+	margin: 0px 25px;
+}
+
+.filters {
+    display: flex; /* Aligns all select elements in a row */
+    justify-content: flex-start; /* Spaces out the select elements evenly */
+    margin: 20px 0px; /* Adds margin around the container */
+}
+
+.filters select {
+	width: 190px;
+    padding: 4px 4px; /* Adds padding inside each select box for better text visibility */
+	margin-left: 8px;
+    border: 2px solid #ccc; /* Adds a light grey border to the select elements */
+    border-radius: 3px; /* Rounds the corners of the select elements */
+    cursor: pointer; /* Changes the cursor to a pointer to indicate interactivity */
+    transition: border-color 0.3s; /* Smooth transition for border color change */
+}
+
+.filters select:hover {
+    border-color: $lt-green; /* Changes the border color on hover for visual feedback */
+}
+
+.filters select:focus {
+    border-color: $lt-green; /* Changes the border color when the select is focused */
+    outline: none; /* Removes the default focus outline to use a custom border style */
+}

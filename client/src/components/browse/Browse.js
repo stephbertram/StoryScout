@@ -73,9 +73,9 @@ const Browse = () => {
     ))
 
     return (
-        <div>
-            <h3 className='browse'>Browse Books</h3>
-            <div>
+        <div className="browse-container">
+            <h3>Browse Books</h3>
+            <div className="filters">
                 <select value={topic} onChange={handleTopicChange}>
                     <option value="">Select Topic</option>
                     {topics.map(topic => <option key={topic} value={topic}>{topic}</option>)}

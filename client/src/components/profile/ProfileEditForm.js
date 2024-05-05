@@ -148,7 +148,7 @@ const ProfileEditForm = () => {
     
 
 	return (
-		<div className='auth'>
+		<div className='edit-profile'>
 			<Formik onSubmit={formik.handleSubmit}>
 				<Form className='form' onSubmit={formik.handleSubmit}>
                     <label htmlFor="username">Username:</label>
@@ -218,8 +218,6 @@ const ProfileEditForm = () => {
 					<input type='submit' className='submit' value='Submit Changes' />
 				</Form>
 			</Formik>
-            <br />
-            <br />
             <button onClick={handleDelete}>Delete Account</button>
 		</div>
 )}
