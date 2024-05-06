@@ -4,7 +4,7 @@ import toast from 'react-hot-toast'
 import * as Yup from 'yup'
 import YupPassword from 'yup-password'
 import { object, string } from 'yup'
-import { Formik, Form, Field, useFormik } from 'formik'
+import { Formik, Form, Field } from 'formik'
 import { UserContext } from '../context/UserContext'
 
 YupPassword(Yup)
@@ -68,9 +68,9 @@ const RegForm = () => {
 			body: formData,
 		}).then(res => res.json())
 		.then(data => {
-			if (data.error) {
-				console.log(data.error)
-				toast.error(data.error)
+			if (data.Error) {
+				console.log(data.Error)
+				toast.error(data.Error)
 			} else {
 				console.log(data)
 				login(data);
