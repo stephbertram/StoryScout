@@ -26,6 +26,7 @@ const Stacks = () => {
 			})
 	}, [user])
 
+
     // Remove Book from User's Stack - CLEAN UP
     const removeBookFromStack = (user_id, book_id) => {
         fetch(`/${user_id}/remove_book/${book_id}`, { method: 'DELETE' })
@@ -57,9 +58,11 @@ const Stacks = () => {
     ))
     return(
         user ? (
-        <div>
+        <div className="main-container">
             <h3 className='stack'>Books in Your Stack</h3>
-            {mappedBooks.length > 0 ? mappedBooks : <p>There are no books in your stack yet.</p>}
+            <div className='books-grid'>
+                {mappedBooks.length > 0 ? mappedBooks : <p>There are no books in your stack yet.</p>}
+            </div>
         </div>
         ) : (
         <>

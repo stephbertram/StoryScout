@@ -175,7 +175,7 @@ nav {
 
 // Browse Books
 
-.browse-container {
+.main-container {
 	margin: 0px 25px;
 }
 
@@ -202,4 +202,68 @@ nav {
 .filters select:focus {
     border-color: $lt-green; 
     outline: none; 
+}
+
+// Book Cards
+
+.books-grid {
+    display: grid;
+	//  Each column has a min width of 200px and a max of 1fr (1fr allocates one fraction of the available space)
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+    grid-gap: 20px;
+    padding: 20px;
+}
+
+.book-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f9f9f9; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+    padding: 15px;
+    border-radius: 8px;
+    cursor: pointer; 
+    transition: transform 0.3s ease; // Smooth scaling effect on hover
+}
+
+.book-container:hover {
+    transform: scale(1.05); // Slightly enlarges the book card on hover
+}
+
+#book-cover-photo img {
+    width: 100%; 
+    height: auto;
+    border-bottom: 1px solid #ccc; // A line between the image and the text content
+}
+
+.text-content {
+    width: 100%;
+    padding: 10px;
+}
+
+#book-title, #book-author {
+    text-align: center; 
+}
+
+#delete-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
+    background-color: transparent; 
+    border: none; 
+    color: $black; 
+    font-weight: bold; 
+    padding: 5px; // Add padding to increase hit area
+    font-size: 16px; // Sets the font size for the 'X'
+
+	&:hover {
+        background-color: #ffdddd; 
+        color: #b10000; 
+    }
+
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.5); // Add focus outline for accessibility
+    }
 }
