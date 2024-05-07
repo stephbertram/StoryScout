@@ -1,8 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import toast from 'react-hot-toast'
 import BookCard from './BookCard'
+import { UserContext } from '../context/UserContext'
+import { useNavigate } from 'react-router-dom'
 
 const Browse = () => {
+    const { user } = useContext(UserContext)
+    const navigate = useNavigate()
     const [books, setBooks] = useState([])
     const [topic, setTopic] = useState('')
     const [rating, setRating] = useState('')
@@ -73,6 +77,7 @@ const Browse = () => {
     ))
 
     return (
+        user ? (
         <div className="browse-container">
             <h3>Browse Books</h3>
             <div className="filters">
@@ -91,6 +96,12 @@ const Browse = () => {
             </div>
             {mappedBooks.length > 0 ? mappedBooks : <p>Loading...</p>}
         </div>
+        ) : (
+        <>
+            <div className='nav-error'>You must be logged in to view this page.</div>
+            <button className='error-nav' onClick={() => navigate('/')}>Go to Login</button>
+        </>
+        )
     )
 }
 

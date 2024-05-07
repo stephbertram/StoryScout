@@ -1,18 +1,13 @@
 import { useEffect, useState, useContext } from 'react'
 import { UserContext } from '../context/UserContext';
-// import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import StackBookCard from './StackBookCard'
 
 const Stacks = () => {
-	// const navigate = useNavigate()
     const { user } = useContext(UserContext)
+    const navigate = useNavigate()
 	const [stackBooks, setStackBooks] = useState([])
-
-	// const handleGoHome = () => {
-	// 	navigate('/')
-	// }
-
 
     // Fetch Books in User's Stack - CLEAN UP
 	useEffect(() => {
@@ -30,8 +25,6 @@ const Stacks = () => {
 				toast.error('An unexpected error occurred.')
 			})
 	}, [user])
-
-
 
     // Remove Book from User's Stack - CLEAN UP
     const removeBookFromStack = (user_id, book_id) => {
@@ -52,8 +45,6 @@ const Stacks = () => {
             })
     }
 
-
-
     const mappedBooks = stackBooks.map(book => (
         <StackBookCard 
             key={book.id} 
@@ -65,26 +56,18 @@ const Stacks = () => {
         />
     ))
     return(
+        user ? (
         <div>
             <h3 className='stack'>Books in Your Stack</h3>
             {mappedBooks.length > 0 ? mappedBooks : <p>There are no books in your stack yet.</p>}
         </div>
+        ) : (
+        <>
+            <div className='nav-error'>You must be logged in to view this page.</div>
+            <button className='error-nav' onClick={() => navigate('/')}>Go to Login</button>
+        </>
+        )
     )
 }
-
-        // user ? (
-            // <>
-            //     <div>
-            //         <h2 className='browse'>Browse Books</h2>
-            //         {mappedBooks}
-            //     </div>
-            // </>
-    //     ) : (
-    //     <>
-    //         <div className='entries-error-message entries'>You must be logged in to view this page.</div>
-    //         <button className='error-nav' onClick={handleGoHome}>Go to Login</button>
-    //     </>
-    // ))
-// }
 
 export default Stacks

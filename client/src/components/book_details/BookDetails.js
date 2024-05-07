@@ -2,9 +2,11 @@ import React, { useEffect, useState, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import { UserContext } from '../context/UserContext'
 import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
 
 const BookDetails = () => {
     const { user } = useContext(UserContext)
+    const navigate = useNavigate()
     const { id } = useParams();
     const [book, setBook] = useState(null);
     const [showReviewModal, setShowReviewModal] = useState(false);
@@ -90,6 +92,7 @@ const BookDetails = () => {
     }
 
     return (
+        user ? (
         <div>
             <div>
                 <h2>{book.title}</h2>
@@ -146,7 +149,13 @@ const BookDetails = () => {
                 )}
             </div>
         </div>
-    );
-};
+        ) : (
+        <>
+            <div className='nav-error'>You must be logged in to view this page.</div>
+            <button className='error-nav' onClick={() => navigate('/')}>Go to Login</button>
+        </>
+        )
+    )
+}
 
 export default BookDetails;

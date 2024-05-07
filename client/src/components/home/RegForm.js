@@ -108,9 +108,6 @@ const RegForm = () => {
 								type='text'
 								name='username'
 								placeholder='Username'
-								// onChange={formik.handleChange}
-								// onBlur={formik.handleBlur}
-								// value={formik.values.username}
 								className='input'
 								autoComplete='username'
 							/>
@@ -124,7 +121,6 @@ const RegForm = () => {
 								type='file' 
 								name='profile_image'
 								ref={file}
-								// onBlur={handleBlur}
 								className='input'
 							/>
 						</>
@@ -133,9 +129,6 @@ const RegForm = () => {
 						type='text'
 						name='email'
 						placeholder='Email'
-						// onChange={handleChange}
-						// onBlur={handleBlur}
-						// value={values.email}
 						className='input'
 						autoComplete='email'
 					/>
@@ -148,9 +141,6 @@ const RegForm = () => {
 						type='password'
 						name='_password_hash'
 						placeholder='Password'
-						// onChange={handleChange}
-						// onBlur={handleBlur}
-						// value={values._password_hash}
 						className='input'
 						autoComplete='current-password'
 					/>
@@ -167,9 +157,6 @@ const RegForm = () => {
 								type='password'
 								name='confirmPassword'
 								placeholder='Confirm Password'
-								// onChange={handleChange}
-								// onBlur={handleBlur}
-								// value={values.confirmPassword}
 								className='input'
 							/>
 							{errors.confirmPassword &&

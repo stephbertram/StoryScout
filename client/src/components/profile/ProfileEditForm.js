@@ -114,9 +114,6 @@ const ProfileEditForm = () => {
                             type='text'
                             name='username'
                             placeholder='Username'
-                            // onChange={formik.handleChange}
-                            // onBlur={formik.handleBlur}
-                            // value={formik.values.username}
                             className='input'
                             autoComplete='username'
                         />
@@ -130,9 +127,6 @@ const ProfileEditForm = () => {
                             type='text'
                             name='email'
                             placeholder='Email'
-                            // onChange={formik.handleChange}
-                            // onBlur={formik.handleBlur}
-                            // value={formik.values.email}
                             className='input'
                             autoComplete='email'
                         />
@@ -146,9 +140,6 @@ const ProfileEditForm = () => {
                             type='password'
                             name='_password_hash'
                             placeholder='New Password'
-                            // onChange={formik.handleChange}
-                            // onBlur={formik.handleBlur}
-                            // value={formik.values._password_hash}
                             className='input'
                             autoComplete='current-password'
                         />
@@ -162,9 +153,6 @@ const ProfileEditForm = () => {
                             type='password'
                             name='confirmPassword'
                             placeholder='Confirm New Password'
-                            // onChange={formik.handleChange}
-                            // onBlur={formik.handleBlur}
-                            // value={formik.values.confirmPassword}
                             className='input'
                         />
                         {errors.confirmPassword &&
