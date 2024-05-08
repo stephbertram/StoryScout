@@ -155,7 +155,27 @@ nav {
 
 // Edit Profile
 
-.edit-profile > button {
+.edit-profile {
+	margin-right: 50px;
+    display: flex; 
+    align-items: flex-start; 
+	width: 100%;
+}
+
+#edit-profile-title {
+	margin-left: 25px;
+}
+
+.form-container {
+	display: flex;
+    flex-direction: column; // Stack children vertically 
+    align-items: flex-end; // Center-align children horizontally
+    width: 50%;
+    justify-content: center;
+    margin: 20px 20px 0px 0px;
+}
+
+.form-container > button {
 	margin-bottom: 16px;
 	height: 2em;
 	width: 18em;
@@ -169,8 +189,20 @@ nav {
 	transition: background-color 0.3s ease;
 }
 
-.edit-profile > button:hover {
+.form-container > button:hover {
     background-color: $yellow
+}
+
+.profile-image-container {
+    flex: 1;  
+    width: 50%;  
+	margin: 20px 0px 0px 20px;
+}
+
+.profile-image-container > img {
+	height: 200px;
+	width: auto;
+	border: 2px solid;
 }
 
 // Browse Books
@@ -267,3 +299,4 @@ nav {
         box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.5); // Add focus outline for accessibility
     }
 }
+

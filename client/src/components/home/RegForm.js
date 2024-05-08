@@ -99,7 +99,7 @@ const RegForm = () => {
 				validationSchema = {isLogin ? loginSchema : signupSchema}
 				onSubmit = {handleSubmit}
 			>
-				{({ values, onChange, onBlur, errors, touched }) => (
+				{({ values, errors, touched }) => (
 					<Form className='form' onSubmit={e => handleSubmit(e, values)}>
 					{/* If signup, show username field */}
 					{!isLogin && (

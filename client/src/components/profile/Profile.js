@@ -10,7 +10,9 @@ const Profile = () => {
     return(
         user ? (
         <>
-            <h3>Edit Your Profile</h3>
+            <div id='edit-profile-title'>
+                <h3>Edit Your Profile</h3>
+            </div>
             <ProfileEditForm />
         </>
         ) : (
