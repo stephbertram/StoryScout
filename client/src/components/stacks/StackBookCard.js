@@ -13,7 +13,7 @@ const StackBookCard = ({ id, title, author, cover_photo, onRemove }) => {
 
     const handleRemove = (e) => {
         e.stopPropagation() // Prevent navigation when clicking on the remove button
-        onRemove(user.id, id)
+        onRemove(id)
     }
 
 
