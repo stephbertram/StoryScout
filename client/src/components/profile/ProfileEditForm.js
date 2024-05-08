@@ -40,7 +40,7 @@ const ProfileEditForm = () => {
         event.preventDefault()
         // Filter out unchanged and unnecessary fields
         const changes = Object.keys(values).reduce((acc, key) => {
-            if (values[key] && values[key] !== user[key] && key !== 'confirmPassword' && key !== 'profile_image') {
+            if (values[key] && values[key] !== user[key] && key !== 'confirmPassword') {
                 acc[key] = values[key]
             }
             return acc
@@ -51,17 +51,15 @@ const ProfileEditForm = () => {
         // POST with just the profile image?
 
         if (Object.keys(changes).length > 0) {
+            const formData = new FormData(event.target)
             fetch(`/users/${user.id}`, {
                 method: 'PATCH',
-                headers: {
-                'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(changes)
+                body: formData,
             })
             .then(response => response.json())
             .then(data => {
-                if (data.error) {
-                toast.error(data.error);
+                if (data.Error) {
+                toast.error(data.Error);
                 } else {
                 setUser(data)  // Update user context
                 toast.success('Profile updated successfully.');
