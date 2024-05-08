@@ -2,9 +2,9 @@
 
 import os
 
-#Signal Handling
-import signal
-import sys
+# #Signal Handling
+# import signal
+# import sys
 
 # Remote library imports
 from flask import request, session, jsonify
@@ -48,16 +48,8 @@ def login_required(func):
     return decorated_function
 
 # API Routes
-# class AllBooks(Resource):
-#     def get(self):
-#         try:
-#             all_books = [book.to_dict() for book in Book.query]
-#             return all_books, 200
-#         except Exception as e:
-#             return {"Error": str(e)}, 400
-# api.add_resource(AllBooks, "/books")
-
 class AllBooks(Resource):
+    @login_required
     def get(self):
         try:
             topic = request.args.get('topic')
@@ -78,7 +70,6 @@ class AllBooks(Resource):
             
             books = query.all()
             filtered_books = [book.to_dict() for book in books]
-            import ipdb; ipdb.set_trace()
             return filtered_books, 200
         except Exception as e:
             return {"Error": str(e)}, 400
@@ -86,6 +77,7 @@ api.add_resource(AllBooks, "/books")
 
 
 class BookById(Resource):
+    @login_required
     def get(self, book_id):
         try:
             book = Book.query.filter_by(id=book_id).first()
@@ -133,6 +125,7 @@ api.add_resource(BookById, "/books/<int:book_id>")
 
 
 class BooksInUserStack(Resource):
+    @login_required
     def get(self, user_id):
         try:
             if user := db.session.get(User, user_id):
@@ -150,6 +143,7 @@ api.add_resource(BooksInUserStack, "/users/<int:user_id>/stacks/books")
 
 
 class UserById(Resource):
+    @login_required
     def get(self, id):
         try: 
             if user := db.session.get(User, id):
@@ -159,19 +153,34 @@ class UserById(Resource):
         except Exception as e:
             return {"Error": str(e)}, 400
     
+    @login_required
     def patch(self, id):
         if user := db.session.get(User, id):
             try:
-                data = request.json
+                file = request.files['profile_image']
+                if file:
+                    response = cloudinary.uploader.upload(
+                        file,
+                        upload_preset="StoryScout",
+                        unique_filename=True, 
+                        overwrite=True,
+                        eager=[{"width": 500, "crop": "fill"}]
+                    )
+                    image_url = response['eager'][0]['secure_url']
+                    user.profile_image=image_url
+
+                data = request.form
                 for attr, value in data.items():
                     setattr(user, attr, value)
                 db.session.commit()
                 return user.to_dict(), 202
+
             except Exception as e:
-                return {"Error": [str(e)]}
+                return {"Error": [str(e)]}, 400
         else:
             return {"Error": "User not found"}, 404
-        
+
+    @login_required    
     def delete(self, id):
         try: 
             if user := db.session.get(User, id):
@@ -187,6 +196,7 @@ api.add_resource(UserById, "/users/<int:id>")
 
 
 class Reviews(Resource):
+    @login_required
     def post(self):
         try:
             data = request.json
@@ -201,6 +211,7 @@ api.add_resource(Reviews, "/reviews")
 
 
 class BookToStack(Resource):
+    @login_required
     def post(self, user_id, book_id):
         try:
             user = User.query.get(user_id)
@@ -228,13 +239,13 @@ api.add_resource(BookToStack, '/<int:user_id>/add_to_stack/<int:book_id>')
 
 
 class RemoveBookFromStack(Resource):
-    def delete(self, user_id, book_id):
+    @login_required
+    def delete(self, book_id):
         try:
-            user = User.query.get(user_id)
+            user = User.query.get(session['user_id']) # use session user id
             if not user:
                 return {"Error": "User not found."}, 404
 
-            # Attempt to find the book in any of the user's stacks
             found_book_stack = None
             for stack in user.stacks:
                 for book_stack in stack.book_stacks:
@@ -256,19 +267,15 @@ class RemoveBookFromStack(Resource):
         except Exception as e:
             db.session.rollback()
             return {"Error": str(e)}, 400
-api.add_resource(RemoveBookFromStack, '/<int:user_id>/remove_book/<int:book_id>')
-
-
-
+api.add_resource(RemoveBookFromStack, '/user/remove_book/<int:book_id>')
 
 
 # User Management
 
-# Signup WITH Image
+# Signup
 class SignUp(Resource):
     def post(self):
         file = request.files['profile_image']
-        import ipdb; ipdb.set_trace()
         if file:
             try:
                 response = cloudinary.uploader.upload(
@@ -279,9 +286,8 @@ class SignUp(Resource):
                     eager=[{"width": 500, "crop": "fill"}]
                 )
                 image_url = response['eager'][0]['secure_url']
-                return image_url
             except Exception as e:
-                return {"Error": str(e)}, 500 
+                return {"Error": str(e)}, 400 
 
         data = request.form
         
@@ -290,7 +296,7 @@ class SignUp(Resource):
                 username=data['username'],
                 email=data['email'],
                 _password_hash=data['_password_hash'], 
-                profile_image=image_url if file and file.filename else None
+                profile_image=image_url if file and image_url else None
             )
             db.session.add(new_user)
             db.session.commit()
@@ -306,36 +312,11 @@ class SignUp(Resource):
             return {"Error": str(e)}, 400
 api.add_resource(SignUp, '/signup')
 
-
-
-# Signup WITHOUT Image
-# class SignUp(Resource):
-#     def post(self):
-#         try:
-#             data = request.get_json()
-#             new_user = User(username=data.get('username'), email=data.get('email'))
-#             new_user.password_hash = data.get('_password_hash')
-#             db.session.add(new_user)
-#             db.session.commit()
-
-#             new_stack = Stack(name="Stack1", user_id=new_user.id)
-#             db.session.add(new_stack)
-#             db.session.commit()
-
-#             session['user_id'] = new_user.id
-#             return new_user.to_dict(), 201
-#         except Exception as e:
-#             db.session.rollback()
-#             return {"Error": str(e)}, 400
-# api.add_resource(SignUp, '/signup')
-
-
-
-
 class Login(Resource):
     def post(self):
         try:  
-            data = request.get_json()
+            # import ipdb; ipdb.set_trace()
+            data = request.form
             user = User.query.filter_by(email=data.get("email")).first()
             if user and user.authenticate(data.get('_password_hash')):
                 session["user_id"] = user.id
@@ -349,9 +330,9 @@ api.add_resource(Login, '/login')
 
 
 #Signal Handling
-def shutdown(signum):
-    print("Shutting down from signal", signum)
-    sys.exit(0)
+# def shutdown(signum):
+#     print("Shutting down from signal", signum)
+#     sys.exit(0)
 
 
 class Logout(Resource):

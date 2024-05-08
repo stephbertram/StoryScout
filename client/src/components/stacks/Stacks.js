@@ -1,22 +1,17 @@
 import { useEffect, useState, useContext } from 'react'
 import { UserContext } from '../context/UserContext';
-// import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import StackBookCard from './StackBookCard'
 
 const Stacks = () => {
-	// const navigate = useNavigate()
     const { user } = useContext(UserContext)
+    const navigate = useNavigate()
 	const [stackBooks, setStackBooks] = useState([])
-
-	// const handleGoHome = () => {
-	// 	navigate('/')
-	// }
-
 
     // Fetch Books in User's Stack - CLEAN UP
 	useEffect(() => {
-		fetch(`/users/${user.id}/stacks/books`)
+		fetch(`/users/${user?.id}/stacks/books`)
 			.then((res) => {
 				if (res.ok) {
 					return res.json().then(setStackBooks)
@@ -31,15 +26,13 @@ const Stacks = () => {
 			})
 	}, [user])
 
-
-
-    // Remove Book from User's Stack - CLEAN UP
-    const removeBookFromStack = (user_id, book_id) => {
-        fetch(`/${user_id}/remove_book/${book_id}`, { method: 'DELETE' })
+    const removeBookFromStack = (book_id) => {
+        console.log(`/user/remove_book/${book_id}`)
+        fetch(`/user/remove_book/${book_id}`, { method: 'DELETE' })
             .then(response => response.json())
             .then(data => {
-                if (data.error) {
-                    console.error('Error removing book:', data.error)
+                if (data.Error) {
+                    console.error('Error removing book:', data.Error)
                     toast.error("Error removing book.")
                 } else {
                     console.log('Book removed successfully');
@@ -52,8 +45,6 @@ const Stacks = () => {
             })
     }
 
-
-
     const mappedBooks = stackBooks.map(book => (
         <StackBookCard 
             key={book.id} 
@@ -65,26 +56,20 @@ const Stacks = () => {
         />
     ))
     return(
-        <div>
+        user ? (
+        <div className="main-container">
             <h3 className='stack'>Books in Your Stack</h3>
-            {mappedBooks.length > 0 ? mappedBooks : <p>There are no books in your stack yet.</p>}
+            <div className='books-grid'>
+                {mappedBooks.length > 0 ? mappedBooks : <p>There are no books in your stack yet.</p>}
+            </div>
         </div>
+        ) : (
+        <>
+            <div className='nav-error'>You must be logged in to view this page.</div>
+            <button className='error-nav' onClick={() => navigate('/')}>Go to Login</button>
+        </>
+        )
     )
 }
-
-        // user ? (
-            // <>
-            //     <div>
-            //         <h2 className='browse'>Browse Books</h2>
-            //         {mappedBooks}
-            //     </div>
-            // </>
-    //     ) : (
-    //     <>
-    //         <div className='entries-error-message entries'>You must be logged in to view this page.</div>
-    //         <button className='error-nav' onClick={handleGoHome}>Go to Login</button>
-    //     </>
-    // ))
-// }
 
 export default Stacks

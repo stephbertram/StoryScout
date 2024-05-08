@@ -13,8 +13,10 @@ const BookCard = ({ id, title, author, cover_photo }) => {
                 <img src={cover_photo} alt={title} />
             </div>
             <div className="text-content">
-                <h3 id='book-title'>Title: {title}</h3>
-                <span id='book-author'>Author: {author}</span>
+                <h3 id='book-title'>{title}</h3>
+                <div id='book-author'>
+                    <span>{author}</span>
+                </div>
             </div>
         </div>
     );

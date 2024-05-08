@@ -13,7 +13,7 @@ const StackBookCard = ({ id, title, author, cover_photo, onRemove }) => {
 
     const handleRemove = (e) => {
         e.stopPropagation() // Prevent navigation when clicking on the remove button
-        onRemove(user.id, id)
+        onRemove(id)
     }
 
 
@@ -21,25 +21,18 @@ const StackBookCard = ({ id, title, author, cover_photo, onRemove }) => {
 
         // Move Button CSS to index.css
 
-        <div id='book-container' onClick={handleNavigate}>
-        <div id='book-cover-photo' style={{ position: 'relative' }}>
-            <img src={cover_photo} alt={title} />
-            <button 
-                onClick={handleRemove} 
-                style={{
-                    position: 'absolute',
-                    top: '5px',
-                    left: '5px',
-                    cursor: 'pointer'
-                }}>
-                X
-            </button>
+        <div className='book-container' onClick={handleNavigate} style={{ position: 'relative' }}>
+            <button id='delete-button' onClick={handleRemove}>X</button>
+            <div id='book-cover-photo'>
+                <img src={cover_photo} alt={title} />
+            </div>
+            <div className="text-content">
+                <h3 id='book-title'>{title}</h3>
+                <div id='book-author'>
+                    <span>{author}</span>
+                </div>
+            </div>
         </div>
-        <div className="text-content">
-            <h3 id='book-title'>Title: {title}</h3>
-            <span id='book-author'>Author: {author}</span>
-        </div>
-    </div>
     )
 }
 

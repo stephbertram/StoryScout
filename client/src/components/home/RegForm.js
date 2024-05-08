@@ -4,7 +4,7 @@ import toast from 'react-hot-toast'
 import * as Yup from 'yup'
 import YupPassword from 'yup-password'
 import { object, string } from 'yup'
-import { Formik, Form, Field, useFormik } from 'formik'
+import { Formik, Form, Field } from 'formik'
 import { UserContext } from '../context/UserContext'
 
 YupPassword(Yup)
@@ -68,9 +68,9 @@ const RegForm = () => {
 			body: formData,
 		}).then(res => res.json())
 		.then(data => {
-			if (data.error) {
-				console.log(data.error)
-				toast.error(data.error)
+			if (data.Error) {
+				console.log(data.Error)
+				toast.error(data.Error)
 			} else {
 				console.log(data)
 				login(data);
@@ -99,7 +99,7 @@ const RegForm = () => {
 				validationSchema = {isLogin ? loginSchema : signupSchema}
 				onSubmit = {handleSubmit}
 			>
-				{({ values, onChange, onBlur, errors, touched }) => (
+				{({ values, errors, touched }) => (
 					<Form className='form' onSubmit={e => handleSubmit(e, values)}>
 					{/* If signup, show username field */}
 					{!isLogin && (
@@ -108,9 +108,6 @@ const RegForm = () => {
 								type='text'
 								name='username'
 								placeholder='Username'
-								// onChange={formik.handleChange}
-								// onBlur={formik.handleBlur}
-								// value={formik.values.username}
 								className='input'
 								autoComplete='username'
 							/>
@@ -124,7 +121,6 @@ const RegForm = () => {
 								type='file' 
 								name='profile_image'
 								ref={file}
-								// onBlur={handleBlur}
 								className='input'
 							/>
 						</>
@@ -133,9 +129,6 @@ const RegForm = () => {
 						type='text'
 						name='email'
 						placeholder='Email'
-						// onChange={handleChange}
-						// onBlur={handleBlur}
-						// value={values.email}
 						className='input'
 						autoComplete='email'
 					/>
@@ -148,9 +141,6 @@ const RegForm = () => {
 						type='password'
 						name='_password_hash'
 						placeholder='Password'
-						// onChange={handleChange}
-						// onBlur={handleBlur}
-						// value={values._password_hash}
 						className='input'
 						autoComplete='current-password'
 					/>
@@ -167,9 +157,6 @@ const RegForm = () => {
 								type='password'
 								name='confirmPassword'
 								placeholder='Confirm Password'
-								// onChange={handleChange}
-								// onBlur={handleBlur}
-								// value={values.confirmPassword}
 								className='input'
 							/>
 							{errors.confirmPassword &&
