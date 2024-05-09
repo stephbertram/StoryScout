@@ -18,6 +18,8 @@ cloudinary = "*"
 python-dotenv = "*"
 rich = "*"
 flask_bcrypt = "*"
+psycopg2 = "*"
+gunicorn = "*"
 
 [requires]
 python_full_version = "3.8.13"
