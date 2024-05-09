@@ -93,24 +93,31 @@ const BookDetails = () => {
 
     return (
         user ? (
-        <div>
+        <div className='main-container'>
             <div>
-                <h2>{book.title}</h2>
-                <img src={book.cover_photo} alt={book.title} />
-                <h3>Author: {book.author}</h3>
-                <h3>Page Count: {book.page_count}</h3>
-                <h3>Topic: {book.topic}</h3>
-                <h3>Av. Rating: {book.average_rating ? book.average_rating.toFixed(2) : 'No Ratings'}</h3>
-                <h3>Recommended Age: {book.rec_age_mode}</h3>
-                <p>Description: {book.description}</p>
+                <button id='back-button' onClick={() => {navigate(-1)}}>Back</button>
             </div>
-            <div>
+            <div className="book-details-container">
+                <div className='book-cover'>
+                    <img src={book.cover_photo} alt={book.title} />
+                </div>
+                <div className='book-details'>
+                    <h3>Title: {book.title}</h3>
+                    <h3>Author: {book.author}</h3>
+                    <h3>Page Count: {book.page_count}</h3>
+                    <h3>Topic: {book.topic}</h3>
+                    <h3>Av. Rating: {book.average_rating ? book.average_rating.toFixed(2) : 'No Ratings'}</h3>
+                    <h3>Rec. Age: {book.rec_age_mode}</h3>
+                    <p>{book.description}</p>
+                </div>
+            </div>
+            <div className='buttons-container'>
                 <button onClick={handleAddToStack}>Add to Stack</button>
                 <button onClick={handleAddReviewClick}>Add Review</button>
             </div>
             {showReviewModal && (
-                <div>
-                    <h2>Add Your Review</h2>
+                <div className='review-container'>
+                    <h3>Add Your Review</h3>
                     <textarea
                         placeholder="Write your review here..."
                         name="review"
@@ -131,12 +138,10 @@ const BookDetails = () => {
                         <option value="Chapter Books (Ages 7-10)">Chapter Books (Ages 7-10)</option>
                     </select>
                     <button onClick={handleSubmitReview}>Submit Review</button>
-                    <button onClick={() => setShowReviewModal(false)}>Close</button>
+                    <button id="close-button" onClick={() => setShowReviewModal(false)}>X</button>
                 </div>
             )}
-            <br />
-            <br />
-            <div>
+            <div className='reviews-container'>
                 <h3>Reviews</h3>
                 {book.reviews && book.reviews.length > 0 ? (
                     book.reviews.map((review, index) => (
