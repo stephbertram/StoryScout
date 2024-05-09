@@ -16,6 +16,8 @@ faker = "*"
 flask-session = "*"
 cloudinary = "*"
 python-dotenv = "*"
+rich = "*"
+flask_bcrypt = "*"
 
 [requires]
 python_full_version = "3.8.13"

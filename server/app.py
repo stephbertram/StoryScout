@@ -315,7 +315,6 @@ api.add_resource(SignUp, '/signup')
 class Login(Resource):
     def post(self):
         try:  
-            # import ipdb; ipdb.set_trace()
             data = request.form
             user = User.query.filter_by(email=data.get("email")).first()
             if user and user.authenticate(data.get('_password_hash')):
