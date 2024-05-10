@@ -201,9 +201,11 @@ nav {
 }
 
 .profile-image-container > img {
-	height: 200px;
-	width: auto;
-	border: 2px solid;
+    height: 200px;  /* Fixed height */
+    width: 200px;   /* Equal width to ensure the image is square */
+    border: 2px solid; /* Your existing border styling */
+    border-radius: 50%; /* This makes the image round */
+    object-fit: cover; /* Ensures the image covers the area without being stretched */
 }
 
 // Browse Books
@@ -219,9 +221,10 @@ nav {
 }
 
 .filters select {
-	width: 190px;
+	width: 210px;
     padding: 4px 4px; 
 	margin-right: 8px;
+	font-size: 15px;
     border: 2px solid $med-gray; 
     border-radius: 3px; 
     cursor: pointer; 
@@ -321,9 +324,30 @@ nav {
 }
 
 .book-details {
+    display: flex; /* Converts .book-details into a flex container */
+    flex-direction: column; /* Stacks children vertically */
+    justify-content: space-between; /* Evenly spaces the children vertically */
+    align-items: start; /* Aligns items to the start of the flex container */
     flex: 1 1; /* Flex-grow, Flex-shrink, Flex-basis */
     width: 60%; 
-	margin: 30px 200px 0px 20px;
+    margin: 30px 200px 0px 20px;
+}
+
+.book-details > span {
+    font-size: 18px;
+    line-height: 1.4em;
+    margin-bottom: 8px; /* Adds space between elements */
+}
+
+.book-details > p {
+    font-size: 18px;
+    line-height: 1.4em;
+	margin: 10px 0px 8px 0px;
+}
+
+/* Removes bottom margin from the last child to maintain even spacing */
+.book-details > :last-child {
+    margin-bottom: 0;
 }
 
 .book-cover img {
@@ -402,6 +426,7 @@ nav {
     border-radius: 4px;
     border: 2px solid $med-gray; /* Medium gray border */
     font-family: $font-primary; /* Consistent typography */
+	font-size: 16px;
     resize: vertical; /* Allows vertical resizing only */
 }
 
@@ -411,6 +436,7 @@ nav {
     margin-bottom: 16px; /* Space between selects and before the buttons */
     border-radius: 4px;
     border: 2px solid $med-gray; /* Medium gray border */
+	font-size: 16px;
     background-color: white; /* Ensures select background is white */
     cursor: pointer; /* Indicates selectability */
 }
@@ -466,7 +492,7 @@ nav {
 .reviews-container h3 {
     color: $black; /* Using the color variable for blue as defined in your settings */
 	font-family: $font-accent;
-    margin-bottom: 15px; /* Space between the header and the first review */
+    margin: 5px 0px 20px 0px; /* Space between the header and the first review */
 }
 
 /* Individual review styling */

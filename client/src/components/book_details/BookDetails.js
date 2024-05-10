@@ -102,12 +102,12 @@ const BookDetails = () => {
                     <img src={book.cover_photo} alt={book.title} />
                 </div>
                 <div className='book-details'>
-                    <h3>Title: {book.title}</h3>
-                    <h3>Author: {book.author}</h3>
-                    <h3>Page Count: {book.page_count}</h3>
-                    <h3>Topic: {book.topic}</h3>
-                    <h3>Av. Rating: {book.average_rating ? book.average_rating.toFixed(2) : 'No Ratings'}</h3>
-                    <h3>Rec. Age: {book.rec_age_mode}</h3>
+                    <span><strong>Title:</strong> {book.title}</span>
+                    <span><strong>Author:</strong> {book.author}</span>
+                    <span><strong>Page Count:</strong> {book.page_count}</span>
+                    <span><strong>Topic:</strong> {book.topic}</span>
+                    <span><strong>Av. Rating:</strong> {book.average_rating ? book.average_rating.toFixed(1) : 'No Ratings'} / 5</span>
+                    <span><strong>Rec. Age:</strong> {book.rec_age_mode}</span>
                     <p>{book.description}</p>
                 </div>
             </div>
