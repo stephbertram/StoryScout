@@ -74,7 +74,7 @@ const RegForm = () => {
 			} else {
 				console.log(data)
 				login(data);
-				navigate('/books')
+				navigate('/browse')
 				toast.success('Successfully logged in!')
 			}
 		})

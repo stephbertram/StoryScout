@@ -19,15 +19,15 @@ const router = createBrowserRouter([
                 index: true
             },
             {
-                path: '/books', 
+                path: '/browse', 
                 element: <Browse />
             },
             {
-                path: '/books/:id',
+                path: '/browse/:id',
                 element: <BookDetails />
             },
             {
-                path: '/stacks',
+                path: '/stack',
                 element: <Stacks />
             },
             {
