@@ -15,8 +15,8 @@ const Nav = () => {
                 {/* Show links if there is a user logged in */}
                 {user && (
                     <>
-                        <NavLink to='/books' className='nav-link'>Browse Books</NavLink>
-                        <NavLink to='/stacks' className='nav-link'>View Stack</NavLink>
+                        <NavLink to='/browse' className='nav-link'>Browse Books</NavLink>
+                        <NavLink to='/stack' className='nav-link'>View Stack</NavLink>
                         <NavLink to='/user/edit' className='nav-link'>Profile</NavLink>
                         <NavLink to='/' className='nav-link' onClick={logout}>Logout</NavLink>
                     </>
