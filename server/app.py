@@ -171,7 +171,10 @@ class UserById(Resource):
 
                 data = request.form
                 for attr, value in data.items():
-                    setattr(user, attr, value)
+                    if attr == '_password_hash':
+                        user.password_hash = value
+                    else:
+                        setattr(user, attr, value)
                 db.session.commit()
                 return user.to_dict(), 202
 
