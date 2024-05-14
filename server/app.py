@@ -295,9 +295,11 @@ class SignUp(Resource):
             new_user = User(
                 username=data['username'],
                 email=data['email'],
-                _password_hash=data['_password_hash'], 
+                # _password_hash=data['_password_hash'], 
                 profile_image=image_url if file and image_url else None
             )
+            new_user.password_hash = data['_password_hash']
+            
             db.session.add(new_user)
             db.session.commit()
 
@@ -311,6 +313,7 @@ class SignUp(Resource):
             db.session.rollback()
             return {"Error": str(e)}, 400
 api.add_resource(SignUp, '/signup')
+
 
 class Login(Resource):
     def post(self):
@@ -327,12 +330,6 @@ class Login(Resource):
             db.session.rollback()
             return {"Error": str(e)}, 400
 api.add_resource(Login, '/login')
-
-
-#Signal Handling
-# def shutdown(signum):
-#     print("Shutting down from signal", signum)
-#     sys.exit(0)
 
 
 class Logout(Resource):

@@ -170,8 +170,8 @@ const RegForm = () => {
 					<input type='submit' className='submit' value={isLogin ? 'Login' : 'Sign up'} />
 					<br />
 					{isLogin ? 
-					<span onClick={handleIsLogin}>Not a member yet? <u class="reg-link">Sign up</u></span>
-					: <span onClick={handleIsLogin}>Already a member? <u class="reg-link">Login</u></span>
+					<span onClick={handleIsLogin}>Not a member yet? <u className="reg-link">Sign up</u></span>
+					: <span onClick={handleIsLogin}>Already a member? <u className="reg-link">Login</u></span>
 					}
 				</Form>
 				)}
