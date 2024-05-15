@@ -66,22 +66,22 @@ const RegForm = () => {
 		fetch(isLogin ? '/login' : '/signup', {
 			method: 'POST',
 			body: formData,
-		}).then(res => res.json())
-		.then(data => {
-			if (data.Error) {
-				console.log(data.Error)
-				toast.error(data.Error)
-			} else {
-				console.log(data)
-				login(data);
-				navigate('/browse')
-				toast.success('Successfully logged in!')
-			}
 		})
-		.catch((error) => {
-			toast.error('An unexpected error occurred.')
-		})
-	
+			.then((res) => {
+				if (res.ok) {
+					return res.json().then((data) => {
+						login(data);
+						navigate('/browse')
+						toast.success('Successfully logged in!')
+					})       
+				} else {
+					return res.json().then((errorObj) => toast.error(errorObj.Error))
+				}
+			})
+			.catch((error) => {
+				console.error('Registration error:', error)
+				toast.error('An unexpected error occurred.')
+			})
 	}
 
 	return (

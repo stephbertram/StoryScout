@@ -52,7 +52,7 @@ const Browse = () => {
                     if (res.ok) {
                         return res.json().then(setBooks)
                     }
-                    return res.json().then((errorObj) => toast.error(errorObj.message))
+                    return res.json().then((errorObj) => toast.error(errorObj.Error))
                 })
                 .catch(err => {
                     toast.error('An unexpected error occurred.')
