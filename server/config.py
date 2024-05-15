@@ -11,11 +11,23 @@ from flask_bcrypt import Bcrypt
 from flask_session import Session
 from os import environ
 
+# Deployment
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 # Local imports
 
 # Instantiate app, set attributes
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///storyscout.db'
+app = Flask(
+    __name__,
+    static_url_path='',
+    static_folder='../client/build',
+    template_folder='../client/build'
+)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = environ.get("DATABASE_URI")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
 

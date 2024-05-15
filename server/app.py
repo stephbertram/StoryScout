@@ -7,7 +7,7 @@ import os
 # import sys
 
 # Remote library imports
-from flask import request, session, jsonify
+from flask import request, session, jsonify, render_template
 from flask_restful import Resource
 from werkzeug.exceptions import NotFound
 from functools import wraps
@@ -48,6 +48,17 @@ def login_required(func):
     return decorated_function
 
 # API Routes
+
+# Frontend Routes
+@app.route('/')
+@app.route('/browse') #changed from books to browse
+@app.route('/browse/<int:book_id>') #changed from books to browse
+@app.route('/stack') #changed from stacks to stack
+@app.route('/user/edit')
+def index(id=0):
+    return render_template("index.html")
+
+
 class AllBooks(Resource):
     @login_required
     def get(self):
@@ -321,7 +332,6 @@ api.add_resource(SignUp, '/signup')
 class Login(Resource):
     def post(self):
         try:  
-            # import ipdb; ipdb.set_trace()
             data = request.form
             user = User.query.filter_by(email=data.get("email")).first()
             if user and user.authenticate(data.get('_password_hash')):
