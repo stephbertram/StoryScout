@@ -9,7 +9,6 @@ const Stacks = () => {
     const navigate = useNavigate()
 	const [stackBooks, setStackBooks] = useState([])
 
-    // Fetch Books in User's Stack - CLEAN UP
 	useEffect(() => {
 		fetch(`/users/${user?.id}/stacks/books`)
 			.then((res) => {
@@ -29,14 +28,13 @@ const Stacks = () => {
     const removeBookFromStack = (book_id) => {
         console.log(`/user/remove_book/${book_id}`)
         fetch(`/user/remove_book/${book_id}`, { method: 'DELETE' })
-            .then(response => response.json())
-            .then(data => {
-                if (data.Error) {
-                    console.error('Error removing book:', data.Error)
-                    toast.error("Error removing book.")
+            .then((res) => {
+                if (res.ok) {
+                    return res.json().then(() => {
+                        setStackBooks(prevBooks => prevBooks.filter(book => book.id !== book_id))
+                        })     
                 } else {
-                    console.log('Book removed successfully');
-                    setStackBooks(prevBooks => prevBooks.filter(book => book.id !== book_id))
+                    return res.json().then((errorObj) => toast.error(errorObj.Error))
                 }
             })
             .catch(error => {
