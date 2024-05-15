@@ -19,7 +19,7 @@ const router = createBrowserRouter([
                 index: true
             },
             {
-                path: '/books', 
+                path: '/browse', 
                 element: <Browse />
             },
             {
@@ -27,7 +27,7 @@ const router = createBrowserRouter([
                 element: <BookDetails />
             },
             {
-                path: '/stacks',
+                path: '/stack',
                 element: <Stacks />
             },
             {

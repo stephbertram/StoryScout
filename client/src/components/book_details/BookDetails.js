@@ -7,28 +7,33 @@ import { useNavigate } from 'react-router-dom'
 const BookDetails = () => {
     const { user } = useContext(UserContext)
     const navigate = useNavigate()
-    const { id } = useParams();
-    const [book, setBook] = useState(null);
-    const [showReviewModal, setShowReviewModal] = useState(false);
+    const { id } = useParams()
+    const [book, setBook] = useState(null)
+    const [showReviewModal, setShowReviewModal] = useState(false)
     const [reviewData, setReviewData] = useState({
         rating: '',
         review: '',
         rec_age: ''
-    });
+    })
 
-    // Clean up
     useEffect(() => {
         fetch(`/books/${id}`)
-            .then(response => response.json())
-            .then(data => setBook(data))
-            .catch(error => {
-                console.error('Error fetching book details:', error)
-                toast.error('Error fetching book details.')
+            .then((res) => {
+                if (res.ok) {
+                    return res.json().then(setBook)
+                }
+                return res
+                    .json()
+                    .then((errorObj) => toast.error(errorObj.Error))
+        }) 
+        .catch(error => {
+            console.error('Error fetching book details:', error)
+            toast.error('Error fetching book details.')
             })
     }, [id])
 
     if (!book) {
-        return <div>Loading...</div>;
+        return <div>Loading...</div>
     }
 
     const handleAddReviewClick = () => {
@@ -44,7 +49,6 @@ const BookDetails = () => {
         setReviewData(prev => ({ ...prev, [name]: formattedValue }))
     }
 
-    // Clean up
     const handleSubmitReview = (e) => {
         e.preventDefault()
         fetch('/reviews', {
@@ -52,23 +56,25 @@ const BookDetails = () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ...reviewData, book_id: book.id, user_id: user.id })
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Review submitted:', data)
-            setShowReviewModal(false);
-            setBook(prevBook => ({
-                ...prevBook,
-                reviews: [...prevBook.reviews, data]
-                })
-            )
-        })
-        .catch(error => {
-            console.error('Error submitting review:', error)
-            toast.error('Failed to submit review.')
-        })
-    }
+            .then((res) => {
+                if (res.ok) {
+                    return res.json().then((data) => {
+                        setShowReviewModal(false)
+                        setBook(prevBook => ({
+                            ...prevBook,
+                            reviews: [...prevBook.reviews, data]
+                        }))
+                    })        
+                } else {
+                    return res.json().then((errorObj) => toast.error(errorObj.Error))
+                }
+            })
+            .catch(error => {
+                console.error('Error submitting review:', error)
+                toast.error('Failed to submit review.')
+            })
+        }
 
-    // Clean up
     const handleAddToStack = () => {
         if (!user || !user.id || !book || !book.id) {
             toast.error('Invalid operation.')
@@ -77,12 +83,15 @@ const BookDetails = () => {
         fetch(`/${user.id}/add_to_stack/${book.id}`, {
             method: 'POST'
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                toast.error(data.error)
+        .then(res => {
+            if (res.ok) {
+                return res.json().then(() => {
+                    toast.success('Book added to your stack!')
+                })
             } else {
-                toast.success('Book added to your stack!')
+                return res.json().then((errorObj) => {
+                    toast.error(errorObj.Error)
+                })
             }
         })
         .catch(error => {
@@ -93,24 +102,31 @@ const BookDetails = () => {
 
     return (
         user ? (
-        <div>
+        <div className='main-container'>
             <div>
-                <h2>{book.title}</h2>
-                <img src={book.cover_photo} alt={book.title} />
-                <h3>Author: {book.author}</h3>
-                <h3>Page Count: {book.page_count}</h3>
-                <h3>Topic: {book.topic}</h3>
-                <h3>Av. Rating: {book.average_rating ? book.average_rating.toFixed(2) : 'No Ratings'}</h3>
-                <h3>Recommended Age: {book.rec_age_mode}</h3>
-                <p>Description: {book.description}</p>
+                <button id='back-button' onClick={() => {navigate(-1)}}>Back</button>
             </div>
-            <div>
+            <div className="book-details-container">
+                <div className='book-cover'>
+                    <img src={book.cover_photo} alt={book.title} />
+                </div>
+                <div className='book-details'>
+                    <span><strong>Title:</strong> {book.title}</span>
+                    <span><strong>Author:</strong> {book.author}</span>
+                    <span><strong>Page Count:</strong> {book.page_count}</span>
+                    <span><strong>Topic:</strong> {book.topic}</span>
+                    <span><strong>Av. Rating:</strong> {book.average_rating ? book.average_rating.toFixed(1) : 'No Ratings'} / 5</span>
+                    <span><strong>Rec. Age:</strong> {book.rec_age_mode}</span>
+                    <p>{book.description}</p>
+                </div>
+            </div>
+            <div className='buttons-container'>
                 <button onClick={handleAddToStack}>Add to Stack</button>
                 <button onClick={handleAddReviewClick}>Add Review</button>
             </div>
             {showReviewModal && (
-                <div>
-                    <h2>Add Your Review</h2>
+                <div className='review-container'>
+                    <h3>Add Your Review</h3>
                     <textarea
                         placeholder="Write your review here..."
                         name="review"
@@ -131,12 +147,10 @@ const BookDetails = () => {
                         <option value="Chapter Books (Ages 7-10)">Chapter Books (Ages 7-10)</option>
                     </select>
                     <button onClick={handleSubmitReview}>Submit Review</button>
-                    <button onClick={() => setShowReviewModal(false)}>Close</button>
+                    <button id="close-button" onClick={() => setShowReviewModal(false)}>X</button>
                 </div>
             )}
-            <br />
-            <br />
-            <div>
+            <div className='reviews-container'>
                 <h3>Reviews</h3>
                 {book.reviews && book.reviews.length > 0 ? (
                     book.reviews.map((review, index) => (
