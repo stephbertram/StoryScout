@@ -46,31 +46,28 @@ const ProfileEditForm = () => {
             return acc
         }, {})
 
-        console.log(changes)
-
-        // POST with just the profile image?
-
         if (Object.keys(changes).length > 0) {
             const formData = new FormData(event.target)
             fetch(`/users/${user.id}`, {
                 method: 'PATCH',
                 body: formData,
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.Error) {
-                toast.error(data.Error);
+            .then((res) => {
+                if (res.ok) {
+                    return res.json().then((data) => {
+                        setUser(data)  // Update user context
+                        toast.success('Profile updated successfully.')
+                    })       
                 } else {
-                setUser(data)  // Update user context
-                toast.success('Profile updated successfully.');
+                    return res.json().then((errorObj) => toast.error(errorObj.Error))
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                toast.error('Failed to update profile.');
-            });
+                toast.error('Failed to update profile.')
+            })
             } else {
-            toast.error('No changes detected.');
+            toast.error('No changes detected.')
             }
         }
 
@@ -81,15 +78,15 @@ const ProfileEditForm = () => {
                 'Content-Type': 'application/json'
             }
         })
-        .then((resp) => {
-            if (resp.ok) {
+        .then((res) => {
+            if (res.ok) {
                 setUser(null)
                 navigate('/')
                 toast.success("Your account has been deleted.")
             } else {
-                return resp
+                return res
                     .json()
-                    .then((errorObj) => toast.error(errorObj.message))
+                    .then((errorObj) => toast.error(errorObj.Error))
             }
         })
         .catch((error) => console.error('Error:', error))

@@ -66,22 +66,22 @@ const RegForm = () => {
 		fetch(isLogin ? '/login' : '/signup', {
 			method: 'POST',
 			body: formData,
-		}).then(res => res.json())
-		.then(data => {
-			if (data.Error) {
-				console.log(data.Error)
-				toast.error(data.Error)
-			} else {
-				console.log(data)
-				login(data);
-				navigate('/browse')
-				toast.success('Successfully logged in!')
-			}
 		})
-		.catch((error) => {
-			toast.error('An unexpected error occurred.')
-		})
-	
+			.then((res) => {
+				if (res.ok) {
+					return res.json().then((data) => {
+						login(data);
+						navigate('/browse')
+						toast.success('Successfully logged in!')
+					})       
+				} else {
+					return res.json().then((errorObj) => toast.error(errorObj.Error))
+				}
+			})
+			.catch((error) => {
+				console.error('Registration error:', error)
+				toast.error('An unexpected error occurred.')
+			})
 	}
 
 	return (
@@ -170,8 +170,8 @@ const RegForm = () => {
 					<input type='submit' className='submit' value={isLogin ? 'Login' : 'Sign up'} />
 					<br />
 					{isLogin ? 
-					<span onClick={handleIsLogin}>Not a member yet? <u class="reg-link">Sign up</u></span>
-					: <span onClick={handleIsLogin}>Already a member? <u class="reg-link">Login</u></span>
+					<span onClick={handleIsLogin}>Not a member yet? <u className="reg-link">Sign up</u></span>
+					: <span onClick={handleIsLogin}>Already a member? <u className="reg-link">Login</u></span>
 					}
 				</Form>
 				)}

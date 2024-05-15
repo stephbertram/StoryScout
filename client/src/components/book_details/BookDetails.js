@@ -7,28 +7,33 @@ import { useNavigate } from 'react-router-dom'
 const BookDetails = () => {
     const { user } = useContext(UserContext)
     const navigate = useNavigate()
-    const { id } = useParams();
-    const [book, setBook] = useState(null);
-    const [showReviewModal, setShowReviewModal] = useState(false);
+    const { id } = useParams()
+    const [book, setBook] = useState(null)
+    const [showReviewModal, setShowReviewModal] = useState(false)
     const [reviewData, setReviewData] = useState({
         rating: '',
         review: '',
         rec_age: ''
-    });
+    })
 
-    // Clean up
     useEffect(() => {
         fetch(`/books/${id}`)
-            .then(response => response.json())
-            .then(data => setBook(data))
-            .catch(error => {
-                console.error('Error fetching book details:', error)
-                toast.error('Error fetching book details.')
+            .then((res) => {
+                if (res.ok) {
+                    return res.json().then(setBook)
+                }
+                return res
+                    .json()
+                    .then((errorObj) => toast.error(errorObj.Error))
+        }) 
+        .catch(error => {
+            console.error('Error fetching book details:', error)
+            toast.error('Error fetching book details.')
             })
     }, [id])
 
     if (!book) {
-        return <div>Loading...</div>;
+        return <div>Loading...</div>
     }
 
     const handleAddReviewClick = () => {
@@ -44,7 +49,6 @@ const BookDetails = () => {
         setReviewData(prev => ({ ...prev, [name]: formattedValue }))
     }
 
-    // Clean up
     const handleSubmitReview = (e) => {
         e.preventDefault()
         fetch('/reviews', {
@@ -52,23 +56,25 @@ const BookDetails = () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ...reviewData, book_id: book.id, user_id: user.id })
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Review submitted:', data)
-            setShowReviewModal(false);
-            setBook(prevBook => ({
-                ...prevBook,
-                reviews: [...prevBook.reviews, data]
-                })
-            )
-        })
-        .catch(error => {
-            console.error('Error submitting review:', error)
-            toast.error('Failed to submit review.')
-        })
-    }
+            .then((res) => {
+                if (res.ok) {
+                    return res.json().then((data) => {
+                        setShowReviewModal(false)
+                        setBook(prevBook => ({
+                            ...prevBook,
+                            reviews: [...prevBook.reviews, data]
+                        }))
+                    })        
+                } else {
+                    return res.json().then((errorObj) => toast.error(errorObj.Error))
+                }
+            })
+            .catch(error => {
+                console.error('Error submitting review:', error)
+                toast.error('Failed to submit review.')
+            })
+        }
 
-    // Clean up
     const handleAddToStack = () => {
         if (!user || !user.id || !book || !book.id) {
             toast.error('Invalid operation.')
@@ -77,12 +83,15 @@ const BookDetails = () => {
         fetch(`/${user.id}/add_to_stack/${book.id}`, {
             method: 'POST'
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                toast.error(data.error)
+        .then(res => {
+            if (res.ok) {
+                return res.json().then(() => {
+                    toast.success('Book added to your stack!')
+                })
             } else {
-                toast.success('Book added to your stack!')
+                return res.json().then((errorObj) => {
+                    toast.error(errorObj.Error)
+                })
             }
         })
         .catch(error => {

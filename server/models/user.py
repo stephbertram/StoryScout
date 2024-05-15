@@ -51,7 +51,8 @@ class User(db.Model, SerializerMixin):
 
     @hybrid_property
     def password_hash(self):
-        raise AttributeError('Access to password is restricted')
+        return self._password_hash
+        # raise AttributeError('Access to password is restricted')
     
     @password_hash.setter
     def password_hash(self, new_password):

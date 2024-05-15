@@ -16,10 +16,7 @@ const StackBookCard = ({ id, title, author, cover_photo, onRemove }) => {
         onRemove(id)
     }
 
-
     return (
-
-        // Move Button CSS to index.css
 
         <div className='book-container' onClick={handleNavigate} style={{ position: 'relative' }}>
             <button id='delete-button' onClick={handleRemove}>X</button>

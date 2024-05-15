@@ -21,7 +21,6 @@ $lt-gray: #EFEFEF;
 $v-lt-gray: #f9f9f9;
 $black: #000;
 
-
 body {
 	line-height: 1;
     font-family: 'Noto Sans', sans-serif;
@@ -201,11 +200,11 @@ nav {
 }
 
 .profile-image-container > img {
-    height: 200px;  /* Fixed height */
-    width: 200px;   /* Equal width to ensure the image is square */
-    border: 2px solid; /* Your existing border styling */
-    border-radius: 50%; /* This makes the image round */
-    object-fit: cover; /* Ensures the image covers the area without being stretched */
+    height: 200px;
+    width: 200px;
+    border: 2px solid;
+    border-radius: 50%; // Makes the image round
+    object-fit: cover; // Ensures the image covers the area without being stretched
 }
 
 // Browse Books
@@ -324,11 +323,11 @@ nav {
 }
 
 .book-details {
-    display: flex; /* Converts .book-details into a flex container */
-    flex-direction: column; /* Stacks children vertically */
-    justify-content: space-between; /* Evenly spaces the children vertically */
-    align-items: start; /* Aligns items to the start of the flex container */
-    flex: 1 1; /* Flex-grow, Flex-shrink, Flex-basis */
+    display: flex;
+    flex-direction: column; // Stacks children vertically
+    justify-content: space-between; // Evenly spaces the children vertically
+    align-items: start; // Aligns items to the start of the flex container
+    flex: 1 1; // Flex-grow, Flex-shrink, Flex-basis
     width: 60%; 
     margin: 30px 200px 0px 20px;
 }
@@ -336,7 +335,7 @@ nav {
 .book-details > span {
     font-size: 18px;
     line-height: 1.4em;
-    margin-bottom: 8px; /* Adds space between elements */
+    margin-bottom: 8px;
 }
 
 .book-details > p {
@@ -345,7 +344,7 @@ nav {
 	margin: 10px 0px 8px 0px;
 }
 
-/* Removes bottom margin from the last child to maintain even spacing */
+// Removes bottom margin from the last child to maintain even spacing
 .book-details > :last-child {
     margin-bottom: 0;
 }
@@ -404,116 +403,111 @@ nav {
 	position: relative;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centers the content horizontally */
+    align-items: center;
     padding: 20px;
     margin: 20px auto;
     border-radius: 8px;
-    background-color: $lt-gray; /* Light gray background */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+    background-color: $lt-gray;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 	width: 75%;
 }
 
 .review-container h3 {
-    margin-bottom: 16px; /* Space between the title and the textarea */
-    font-family: $font-accent; /* Accent font for headings */
+    margin-bottom: 16px;
+    font-family: $font-accent;
 }
 
 .review-container textarea {
-    width: 90%; /* Responsive width */
-    height: 120px; /* Sufficient height for writing reviews */
+    width: 90%;
+    height: 120px;
     padding: 10px;
-    margin-bottom: 16px; /* Space between the textarea and the next element */
+    margin-bottom: 16px;
     border-radius: 4px;
-    border: 2px solid $med-gray; /* Medium gray border */
-    font-family: $font-primary; /* Consistent typography */
+    border: 2px solid $med-gray;
+    font-family: $font-primary;
 	font-size: 16px;
-    resize: vertical; /* Allows vertical resizing only */
+    resize: vertical; // Allows vertical resizing only
 }
 
 .review-container select {
-    width: 30%; /* Half width to match design consistency */
+    width: 30%;
     padding: 8px 12px;
-    margin-bottom: 16px; /* Space between selects and before the buttons */
+    margin-bottom: 16px;
     border-radius: 4px;
-    border: 2px solid $med-gray; /* Medium gray border */
+    border: 2px solid $med-gray;
 	font-size: 16px;
-    background-color: white; /* Ensures select background is white */
-    cursor: pointer; /* Indicates selectability */
+    background-color: white;
+    cursor: pointer;
 }
 
 .review-container button {
-    padding: 10px 30px; /* Comfortable padding for buttons */
-    text-transform: uppercase; /* Uppercase text for buttons */
+    padding: 10px 30px;
+    text-transform: uppercase;
     font-weight: bold;
     color: $black;
-    background-color: $med-yellow; /* Medium orange background for buttons */
+    background-color: $med-yellow;
     border: none;
     border-radius: 3px;
-    margin: 5px; /* Small margin around buttons for space */
+    margin: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .review-container button:hover {
-    background-color: $yellow; /* Darker orange on hover for contrast */
+    background-color: $yellow;
 }
 
-/* Adding custom styles for closing the modal specifically */
 #close-button {
-    position: absolute; /* Position the button absolutely within its parent */
-    top: 10px; /* Position from the top of the container */
-    right: 10px; /* Position from the right of the container */
-    padding: 5px 8px; /* Smaller padding for a more button-like appearance */
-    font-size: 16px; /* Sufficient size for visibility */
-    color: $black; /* Button text color */
+    position: absolute; // Position the button absolutely within its parent
+    top: 10px; // Position from the top of the container
+    right: 10px; // Position from the right of the container
+    padding: 5px 8px;
+    font-size: 16px;
+    color: $black;
 	font-weight: bold;
-    background-color: transparent; /* Transparent background */
-    border: none; /* No border */
-    border-radius: 3px; /* Rounded corners */
-    cursor: pointer; /* Cursor indicates it's clickable */
+    background-color: transparent;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
 }
 
 #close-button:hover {
-    background-color: $lt-gray; /* Light gray background on hover for visibility */
+    background-color: $lt-gray;
 }
 
 // Reviews
 
 .reviews-container {
-    margin: 20px auto; /* Space above the container to separate from previous elements */
-    padding: 20px; /* Padding around the content inside the container */
-    background-color: $lt-gray; /* Very light grey background for the whole container */
-    border-radius: 8px; /* Rounded corners for the container */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow for depth */
-    width: 75%; /* Automatically adjust width based on content and padding */
+    margin: 20px auto;
+    padding: 20px;
+    background-color: $lt-gray;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    width: 75%;
 }
 
-/* Styling for the heading inside the reviews container */
 .reviews-container h3 {
-    color: $black; /* Using the color variable for blue as defined in your settings */
+    color: $black; 
 	font-family: $font-accent;
-    margin: 5px 0px 20px 0px; /* Space between the header and the first review */
+    margin: 5px 0px 20px 0px;
 }
 
-/* Individual review styling */
 .reviews-container div {
-    background-color: $v-lt-gray; /* Light grey background for each review */
-    padding: 10px; /* Padding inside each review box */
-    margin-bottom: 10px; /* Space between reviews */
-    border-radius: 4px; /* Rounded corners for each review */
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Very subtle shadow for each review box */
+    background-color: $v-lt-gray;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
-/* Styling for the paragraph inside each review */
 .reviews-container p {
-    margin: 0; /* Remove default margin to control spacing tightly via padding */
-    line-height: 1.4; /* Improved line height for readability */
-    color: #333; /* Dark grey for text, enhancing contrast against the light background */
+    margin: 0;
+    line-height: 1.4;
+    color: #333;
 }
 
-/* Special case when there are no reviews */
 .reviews-container p.no-reviews {
-    text-align: center; /* Center the text if there are no reviews */
-    color: #666; /* Lighter text color for "no reviews yet" message */
+    text-align: center;
+    color: #666;
 }
 
