@@ -17,10 +17,10 @@ const Stacks = () => {
 				}
 				return res
 					.json()
-					.then((errorObj) => toast.error(errorObj.message))
+					.then((errorObj) => toast.error(errorObj.Error))
 			})
-			.catch((err) => {
-                console.log('Failed to fetch books in stack:',err)
+			.catch((error) => {
+                console.log('Failed to fetch books in stack:',error)
 				toast.error('An unexpected error occurred.')
 			})
 	}, [user])
