@@ -46,10 +46,6 @@ const ProfileEditForm = () => {
             return acc
         }, {})
 
-        console.log(changes)
-
-        // POST with just the profile image?
-
         if (Object.keys(changes).length > 0) {
             const formData = new FormData(event.target)
             fetch(`/users/${user.id}`, {
