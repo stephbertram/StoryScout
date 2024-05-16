@@ -64,7 +64,7 @@ python seed.py (this will seed the database)
 
 ## License
 
-Distributed under the MIT License. See LICENSE.txt for more information.
+Distributed under Flatiron School's Learn.co License. See LICENSE.md for more information.
 
 ---
 
